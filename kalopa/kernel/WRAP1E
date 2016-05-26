@@ -1,0 +1,71 @@
+#
+# PC Engines WRAP 1E board
+# kernel configuration file for FreeBSD/i386
+#
+machine		i386
+cpu		I586_CPU
+ident		WRAP
+
+options		CPU_GEODE
+
+makeoptions	DEBUG=-g		# Build kernel with gdb(1) debug symbols
+
+options		SCHED_4BSD		# 4BSD scheduler
+options		PREEMPTION		# Enable kernel thread preemption
+options		INET			# InterNETworking
+options		FFS			# Berkeley Fast Filesystem
+options		SOFTUPDATES		# Enable FFS soft updates support
+options		MD_ROOT			# MD is a potential root device
+options		PROCFS			# Process filesystem
+options		PSEUDOFS		# Pseudo-filesystem framework
+options		COMPAT_43TTY		# BSD 4.3 TTY compat [KEEP THIS!]
+options		COMPAT_FREEBSD4		# Compatible with FreeBSD4
+options		COMPAT_FREEBSD5		# Compatible with FreeBSD5
+options		COMPAT_FREEBSD6		# Compatible with FreeBSD6
+options		SCSI_DELAY=5000		# Delay (in ms) before probing SCSI
+options		KTRACE			# ktrace(1) support
+options		SYSVSHM			# SYSV-style shared memory
+options		SYSVMSG			# SYSV-style message queues
+options		SYSVSEM			# SYSV-style semaphores
+options		_KPOSIX_PRIORITY_SCHEDULING # POSIX P1003_1B real-time extensions
+options		ADAPTIVE_GIANT		# Giant mutex is adaptive.
+options		STOP_NMI		# Stop CPUS using NMI instead of IPI
+
+# Bus support.
+device		isa
+device		pci
+
+# ATA and ATAPI devices
+device		ata
+device		atadisk		# ATA disk drives
+
+# Add suspend/resume support for the i8254.
+device		pmtimer
+
+# Serial (COM) ports
+device		sio		# 8250, 16[45]50 based serial ports
+device		uart		# Generic UART driver
+
+# PCI Ethernet NICs that use the common MII bus controller code.
+# NOTE: Be sure to keep the 'device miibus' line in order to use these NICs!
+device		miibus		# MII bus support
+device		sis		# Silicon Integrated Systems SiS 900/SiS 7016
+
+# Pseudo devices.
+device		loop		# Network loopback
+device		random		# Entropy device
+device		ether		# Ethernet support
+device		tun		# Packet tunnel.
+device		pty		# Pseudo-ttys (telnet etc)
+device		md		# Memory "disks"
+
+# The `bpf' device enables the Berkeley Packet Filter.
+# Be aware of the administrative consequences of enabling this!
+# Note that 'bpf' is required for DHCP.
+device		bpf		# Berkeley packet filter
+
+options		DEVICE_POLLING
+options		HZ=1000
+options		NO_SWAPPING
+options		GEOM_LABEL
+

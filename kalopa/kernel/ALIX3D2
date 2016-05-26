@@ -1,0 +1,110 @@
+#
+# PC Engines ALIX 3D2 board
+# kernel configuration file for FreeBSD/i386
+#
+machine		i386
+cpu		I586_CPU
+ident		ALIX
+
+options		CPU_GEODE
+
+makeoptions	DEBUG=-g		# Build kernel with gdb(1) debug symbols
+
+options 	SCHED_ULE		# ULE scheduler
+options 	PREEMPTION		# Enable kernel thread preemption
+options 	INET			# InterNETworking
+options 	FFS			# Berkeley Fast Filesystem
+options 	SOFTUPDATES		# Enable FFS soft updates support
+options 	MD_ROOT			# MD is a potential root device
+options 	PROCFS			# Process filesystem
+options 	PSEUDOFS		# Pseudo-filesystem framework
+options 	COMPAT_43TTY		# BSD 4.3 TTY compat [KEEP THIS!]
+options 	COMPAT_FREEBSD4		# Compatible with FreeBSD4
+options 	COMPAT_FREEBSD5		# Compatible with FreeBSD5
+options 	COMPAT_FREEBSD6		# Compatible with FreeBSD6
+options 	COMPAT_FREEBSD7		# Compatible with FreeBSD7
+options 	SCSI_DELAY=5000		# Delay (in ms) before probing SCSI
+options 	KTRACE			# ktrace(1) support
+options 	SYSVSHM			# SYSV-style shared memory
+options 	SYSVMSG			# SYSV-style message queues
+options 	SYSVSEM			# SYSV-style semaphores
+options 	_KPOSIX_PRIORITY_SCHEDULING # POSIX P1003_1B real-time extensions
+
+device		cpufreq
+
+# Bus support.
+device		isa
+device		pci
+
+# ATA and ATAPI devices
+device		ata
+device		atadisk		# ATA disk drives
+
+# Add suspend/resume support for the i8254.
+device		pmtimer
+
+# Serial (COM) ports
+device		uart		# Generic UART driver
+
+# PCI Ethernet NICs that use the common MII bus controller code.
+# NOTE: Be sure to keep the 'device miibus' line in order to use these NICs!
+device		miibus		# MII bus support
+device		vr		# VIA Rhine, Rhine II
+
+#
+# Atheros chip set
+device		wlan		# 802.11 support
+options		IEEE80211_DEBUG	# enable debug msgs
+options		IEEE80211_AMPDU_AGE # age frames in AMPDU reorder q's
+options		IEEE80211_SUPPORT_MESH # enable 802.11s draft support
+device		wlan_wep	# 802.11 WEP support
+device		wlan_ccmp	# 802.11 CCMP support
+device		wlan_tkip	# 802.11 TKIP support
+device		wlan_amrr	# AMRR transmit rate control algorithm
+device		ath		# Atheros pci/cardbus NIC's
+device		ath_hal		# pci/cardbus chip support
+options		AH_SUPPORT_AR5416	# enable AR5416 tx/rx descriptors
+device		ath_rate_sample	# SampleRate tx rate control for ath
+
+# Pseudo devices.
+device		loop		# Network loopback
+device		random		# Entropy device
+device		ether		# Ethernet support
+device		tun		# Packet tunnel.
+device		pty		# Pseudo-ttys (telnet etc)
+device		md		# Memory "disks"
+
+# The `bpf' device enables the Berkeley Packet Filter.
+# Be aware of the administrative consequences of enabling this!
+# Note that 'bpf' is required for DHCP.
+device		bpf		# Berkeley packet filter
+
+# USB support
+options 	USB_DEBUG	# enable debug msgs
+device		uhci		# UHCI PCI->USB interface
+device		ohci		# OHCI PCI->USB interface
+device		ehci		# EHCI PCI->USB interface (USB 2.0)
+device		usb		# USB Bus (required)
+#device		udbp		# USB Double Bulk Pipe devices
+device		uhid		# "Human Interface Devices"
+device		ukbd		# Keyboard
+device		u3g		# USB-based 3G modems (Option, Huawei, Sierra)
+device		uark		# Technologies ARK3116 based serial adapters
+device		ubsa		# Belkin F5U103 and compatible serial adapters
+device		uftdi		# For FTDI usb serial adapters
+device		uipaq		# Some WinCE based devices
+device		uplcom		# Prolific PL-2303 serial adapters
+device		uslcom		# SI Labs CP2101/CP2102 serial adapters
+
+# VirtIO support
+device		virtio			# Generic VirtIO bus (required)
+device		virtio_pci		# VirtIO PCI device
+device		vtnet			# VirtIO Ethernet device
+device		virtio_blk		# VirtIO Block device
+device		virtio_scsi		# VirtIO SCSI device
+device		virtio_balloon		# VirtIO Memory Balloon device
+
+options		DEVICE_POLLING
+options		HZ=1000
+options		NO_SWAPPING
+options		GEOM_LABEL
