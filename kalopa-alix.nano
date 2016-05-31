@@ -1,7 +1,6 @@
-MY_NANO_DIR=/usr/home/dtynan/nano
+MY_NANO_DIR=/usr/home/dtynan/robobsd
 
 NANO_SRC=/usr/src
-NANO_IMAGES=2
 
 NANO_APPDIR=${MY_NANO_DIR}/kalopa/app
 NANO_CFGDIR=${MY_NANO_DIR}/kalopa/cfg
@@ -27,7 +26,7 @@ NANO_APPSIZE=1260000
 NANO_CONFSIZE=2048
 NANO_DATASIZE=-1
 
-NANO_PACKAGE_DIR=${MY_NANO_DIR}/kalopa/Pkg
+NANO_PACKAGE_DIR=/usr/ports/packages/All
 NANO_PACKAGE_LIST="*"
 
 cust_boot_cfg () (
@@ -37,6 +36,13 @@ cust_boot_cfg () (
 	echo "autoboot_delay=\"2\"" >> boot/loader.conf
 	echo "beastie_disable=\"YES\"" >> boot/loader.conf
 	echo "hint.acpi.0.disabled=\"1\"" >> boot/loader.conf
+)
+
+last_orders () (
+	rm -f ${MY_NANO_DIR}/robobsd.img-
+	mv ${MY_NANO_DIR}/robobsd.img ${MY_NANO_DIR}/robobsd.img-
+	gzip < ${NANO_DISKIMGDIR}/_.disk.image > ${MY_NANO_DIR}/robobsd.img
+	true
 )
 
 customize_cmd cust_boot_cfg
