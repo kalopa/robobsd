@@ -1,4 +1,4 @@
-# nanobsd
+# RoboBSD
 Configuration files for creating a NanoBSD compact flash image
 specifically for a robotic environment.
 
