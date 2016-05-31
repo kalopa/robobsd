@@ -3,6 +3,8 @@
 # Copyright (c) 2005 Poul-Henning Kamp.
 # All rights reserved.
 #
+# Adapted by Dermot Tynan for RoboBSD purposes.
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
@@ -99,6 +101,7 @@ NANO_DRIVE=ad0
 NANO_MEDIASIZE=2000000
 
 # Number of code images on media (1 or 2)
+# Make sure to set this to 1 if using an App partition
 NANO_IMAGES=2
 
 # 0 -> Leave second image all zeroes so it compresses better.
@@ -112,6 +115,10 @@ NANO_CODESIZE=0
 # Size of configuration file system in 512 bytes sectors
 # Cannot be zero.
 NANO_CONFSIZE=2048
+
+# Size of app file system in 512 byte sectors
+# If zero: no partition configured.
+NANO_APPSIZE=0
 
 # Size of data file system in 512 bytes sectors
 # If zero: no partition configured.
@@ -149,6 +156,7 @@ PPLEVEL=3
 # Set NANO_LABEL to non-blank to form the basis for using /dev/ufs/label
 # in preference to /dev/${NANO_DRIVE}
 # Root partition will be ${NANO_LABEL}s{1,2}
+# /app partition will be ${NANO_LABEL}s2
 # /cfg partition will be ${NANO_LABEL}s3
 # /data partition will be ${NANO_LABEL}s4
 NANO_LABEL=""
@@ -163,6 +171,9 @@ NANO_ARCH=`uname -p`
 
 # Directory to populate /cfg from
 NANO_CFGDIR=""
+
+# Directory to populate /app from
+NANO_APPDIR=""
 
 # Directory to populate /data from
 NANO_DATADIR=""
@@ -422,8 +433,10 @@ setup_nanobsd_etc ( ) (
 	echo "NANO_DRIVE=${NANO_DRIVE}" > etc/nanobsd.conf
 
 	echo "/dev/${NANO_DRIVE}s1a / ufs ro 1 1" > etc/fstab
+	echo "/dev/${NANO_DRIVE}s2 /app ufs ro 1 1" >> etc/fstab
 	echo "/dev/${NANO_DRIVE}s3 /cfg ufs rw,noauto 2 2" >> etc/fstab
-	mkdir -p cfg
+	echo "/dev/${NANO_DRIVE}s3 /data ufs rw 2 2" >> etc/fstab
+	mkdir -p app cfg data
 	)
 )
 
@@ -470,6 +483,10 @@ populate_slice ( ) (
 	nano_umount ${mnt}
 )
 
+populate_app_slice ( ) (
+	populate_slice "$1" "$2" "$3" "$4"
+)
+
 populate_cfg_slice ( ) (
 	populate_slice "$1" "$2" "$3" "$4"
 )
@@ -485,7 +502,7 @@ create_i386_diskimage ( ) (
 	(
 	echo $NANO_MEDIASIZE $NANO_IMAGES \
 		$NANO_SECTS $NANO_HEADS \
-		$NANO_CODESIZE $NANO_CONFSIZE $NANO_DATASIZE |
+		$NANO_CODESIZE $NANO_CONFSIZE $NANO_APPSIZE $NANO_DATASIZE |
 	awk '
 	{
 		printf "# %s\n", $0
@@ -503,8 +520,15 @@ create_i386_diskimage ( ) (
 			print "g c" 1023 " h" $4 " s" $3
 
 		if ($7 > 0) { 
+			# size of app partition in full cylinders
+			asl = int (($7 + cs - 1) / cs)
+		} else {
+			asl = 0;
+		}
+
+		if ($8 > 0) { 
 			# size of data partition in full cylinders
-			dsl = int (($7 + cs - 1) / cs)
+			dsl = int (($8 + cs - 1) / cs)
 		} else {
 			dsl = 0;
 		}
@@ -528,6 +552,9 @@ create_i386_diskimage ( ) (
 		if ($2 > 1) {
 			print "p 2 165 " $3 + c, isl * cs - $3
 			c += isl * cs;
+		} else if ($7 > 0) {
+			print "p 2 165 " $3 + c, asl * cs - $3
+			c += asl * cs;
 		}
 
 		# Config partition starts at cylinder boundary.
@@ -535,9 +562,9 @@ create_i386_diskimage ( ) (
 		c += csl * cs
 
 		# Data partition (if any) starts at cylinder boundary.
-		if ($7 > 0) {
+		if ($8 > 0) {
 			print "p 4 165 " c, dsl * cs
-		} else if ($7 < 0 && $1 > c) {
+		} else if ($8 < 0 && $1 > c) {
 			print "p 4 165 " c, $1 - c
 		} else if ($1 < c) {
 			print "Disk space overcommitted by", \
@@ -601,6 +628,11 @@ create_i386_diskimage ( ) (
 		fi
 	fi
 	
+	# Create Application slice, if any.
+	if [ $NANO_IMAGES -eq 1 -a $NANO_APPSIZE -gt 0 ] ; then
+		populate_app_slice /dev/${MD}s2 "${NANO_APPDIR}" ${MNT} "s2"
+	fi
+
 	# Create Config slice
 	populate_cfg_slice /dev/${MD}s3 "${NANO_CFGDIR}" ${MNT} "s3"
 
