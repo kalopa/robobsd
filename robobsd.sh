@@ -9,6 +9,8 @@
 # Copyright (c) 2005 Poul-Henning Kamp.
 # All rights reserved.
 #
+# Adapted by Dermot Tynan for RoboBSD purposes.
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
 # are met:
@@ -120,6 +122,10 @@ ROBO_APPSIZE=0
 # Cannot be zero.
 ROBO_CONFSIZE=2048
 
+# Size of app file system in 512 byte sectors
+# If zero: no partition configured.
+NANO_APPSIZE=0
+
 # Size of data file system in 512 bytes sectors
 # If zero: no partition configured.
 # If negative: max size possible
@@ -155,7 +161,8 @@ PPLEVEL=3
 
 # Set ROBO_LABEL to non-blank to form the basis for using /dev/ufs/label
 # in preference to /dev/${ROBO_DRIVE}
-# Root partition will be ${ROBO_LABEL}s{1,2}
+# Root partition will be ${ROBO_LABEL}s1
+# /app partition will be $ROBO_LABEL}s2
 # /cfg partition will be ${ROBO_LABEL}s3
 # /data partition will be ${ROBO_LABEL}s4
 ROBO_LABEL=""
@@ -173,6 +180,9 @@ ROBO_APPDIR=""
 
 # Directory to populate /cfg from
 ROBO_CFGDIR=""
+
+# Directory to populate /app from
+NANO_APPDIR=""
 
 # Directory to populate /data from
 ROBO_DATADIR=""
@@ -532,8 +542,15 @@ create_i386_diskimage() (
 		}
 
 		if ($7 > 0) { 
+			# size of app partition in full cylinders
+			asl = int (($7 + cs - 1) / cs)
+		} else {
+			asl = 0;
+		}
+
+		if ($8 > 0) { 
 			# size of data partition in full cylinders
-			dsl = int (($7 + cs - 1) / cs)
+			dsl = int (($8 + cs - 1) / cs)
 		} else {
 			dsl = 0;
 		}
@@ -563,9 +580,9 @@ create_i386_diskimage() (
 		c += csl * cs
 
 		# Data partition (if any) starts at cylinder boundary.
-		if ($7 > 0) {
+		if ($8 > 0) {
 			print "p 4 165 " c, dsl * cs
-		} else if ($7 < 0 && $1 > c) {
+		} else if ($8 < 0 && $1 > c) {
 			print "p 4 165 " c, $1 - c
 		} else if ($1 < c) {
 			print "Disk space overcommitted by", \
