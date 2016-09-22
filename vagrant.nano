@@ -8,8 +8,8 @@ ROBO_APPDIR=${BASE_DIR}/robobsd/app
 ROBO_CFGDIR=${BASE_DIR}/robobsd/cfg
 ROBO_DATADIR=${BASE_DIR}/robobsd/data
 
+ROBO_NAME=vagrant
 ROBO_IMGNAME="vagrantdisk.img"
-ROBO_NAME=robobsd
 ROBO_KERNEL=GENERIC
 
 ROBO_BOOT0CFG="-o nopacket -s 1 -m 13 -t 36"
@@ -41,9 +41,9 @@ cust_boot_cfg () (
 )
 
 last_orders () (
-	rm -f ${BASE_DIR}/robobsd.img-
-	mv ${BASE_DIR}/robobsd.img ${BASE_DIR}/robobsd.img-
-	mv ${ROBO_DISKIMGDIR}/_.disk.image ${BASE_DIR}/robobsd.img
+	rm -f ${BASE_DIR}/${ROBO_IMGNAME}-
+	mv ${BASE_DIR}/${ROBO_IMGNAME} ${BASE_DIR}/${ROBO_IMGNAME}-
+	mv ${ROBO_DISKIMGDIR}/_.disk.image ${BASE_DIR}/${ROBO_IMGNAME}
 	true
 )
 

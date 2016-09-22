@@ -1,36 +1,38 @@
-MY_NANO_DIR=/home/dtynan/Dropbox/Robotics/robobsd
+BASE_DIR=/home/vagrant
 
-NANO_SRC=/usr/src
+ROBO_SRC=/usr/src
 
-NANO_APPDIR=${MY_NANO_DIR}/robobsd/app
-NANO_CFGDIR=${MY_NANO_DIR}/robobsd/cfg
-NANO_DATADIR=${MY_NANO_DIR}/robobsd/data
+ROBO_ARCH=i386
 
-NANO_IMGNAME="alixdisk.img"
-NANO_NAME=robobsd
-NANO_KERNEL=ALIX3D2
+ROBO_APPDIR=${BASE_DIR}/robobsd/app
+ROBO_CFGDIR=${BASE_DIR}/robobsd/cfg
+ROBO_DATADIR=${BASE_DIR}/robobsd/data
 
-NANO_BOOT0CFG="-o nopacket -s 1 -m 13 -t 36"
-NANO_BOOT2CFG="-S38400 -h"
+ROBO_NAME=alix
+ROBO_IMGNAME="alixdisk.img"
+ROBO_KERNEL=ALIX3D2
+
+ROBO_BOOT0CFG="-o nopacket -s 1 -m 13 -t 36"
+ROBO_BOOT2CFG="-S38400 -h"
 
 # Kingston 4GB Compact Flash:
 # Phy CHS: 7745/16/63 Log CHS: 968/128/63
-NANO_MEDIASIZE=7806960
-NANO_HEADS=16
-NANO_SECTS=63
+ROBO_MEDIASIZE=7806960
+ROBO_HEADS=16
+ROBO_SECTS=63
 
-NANO_IMAGES=1
+ROBO_IMAGES=1
 
-NANO_CODESIZE=1260000
-NANO_APPSIZE=1260000
-NANO_CONFSIZE=2048
-NANO_DATASIZE=-1
+ROBO_CODESIZE=1260000
+ROBO_APPSIZE=1260000
+ROBO_CONFSIZE=2048
+ROBO_DATASIZE=-1
 
-NANO_PACKAGE_DIR=/usr/ports/packages/All
-NANO_PACKAGE_LIST="*"
+ROBO_PACKAGE_DIR=${BASE_DIR}/packages/
+ROBO_PACKAGE_LIST="*"
 
 cust_boot_cfg () (
-	cd ${NANO_WORLDDIR}
+	cd ${ROBO_WORLDDIR}
 	echo "console=\"comconsole\"" > boot/loader.conf
 	echo "comconsole_speed=\"38400\"" >> boot/loader.conf
 	echo "autoboot_delay=\"2\"" >> boot/loader.conf
@@ -39,15 +41,13 @@ cust_boot_cfg () (
 )
 
 last_orders () (
-	if [ -f ${IMAGE_FILE} ] ; then
-		rm -f ${IMAGE_FILE}.old
-		mv ${IMAGE_FILE} ${IMAGE_FILE}.old
-	fi
-	gzip < ${NANO_DISKIMGDIR}/_.disk.image > ${IMAGE_FILE}
+	rm -f ${BASE_DIR}/${ROBO_IMGNAME}-
+	mv ${BASE_DIR}/${ROBO_IMGNAME} ${BASE_DIR}/${ROBO_IMGNAME}-
+	mv ${ROBO_DISKIMGDIR}/_.disk.image ${BASE_DIR}/${ROBO_IMGNAME}
 	true
 )
 
 customize_cmd cust_boot_cfg
 customize_cmd cust_comconsole
 customize_cmd cust_install_files
-customize_cmd cust_pkgng
+customize_cmd cust_pkg
