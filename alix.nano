@@ -1,13 +1,13 @@
-MY_NANO_DIR=/usr/home/dtynan/robobsd
+MY_NANO_DIR=/home/dtynan/Dropbox/Robotics/robobsd
 
 NANO_SRC=/usr/src
 
-NANO_APPDIR=${MY_NANO_DIR}/kalopa/app
-NANO_CFGDIR=${MY_NANO_DIR}/kalopa/cfg
-NANO_DATADIR=${MY_NANO_DIR}/kalopa/data
+NANO_APPDIR=${MY_NANO_DIR}/robobsd/app
+NANO_CFGDIR=${MY_NANO_DIR}/robobsd/cfg
+NANO_DATADIR=${MY_NANO_DIR}/robobsd/data
 
 NANO_IMGNAME="alixdisk.img"
-NANO_NAME=kalopa-alix
+NANO_NAME=robobsd
 NANO_KERNEL=ALIX3D2
 
 NANO_BOOT0CFG="-o nopacket -s 1 -m 13 -t 36"

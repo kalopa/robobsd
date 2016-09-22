@@ -3,12 +3,12 @@ MY_NANO_DIR=/usr/home/dtynan/nano
 NANO_SRC=/usr/src
 NANO_IMAGES=2
 
-NANO_APPDIR=${MY_NANO_DIR}/kalopa/app
-NANO_CFGDIR=${MY_NANO_DIR}/kalopa/cfg
-NANO_DATADIR=${MY_NANO_DIR}/kalopa/data
+NANO_APPDIR=${MY_NANO_DIR}/robobsd/app
+NANO_CFGDIR=${MY_NANO_DIR}/robobsd/cfg
+NANO_DATADIR=${MY_NANO_DIR}/robobsd/data
 
 NANO_IMGNAME="wrapdisk.img"
-NANO_NAME=kalopa-wrap
+NANO_NAME=robobsd
 NANO_KERNEL=kernel/WRAP1D
 
 NANO_BOOT0CFG="-o nopacket -s 1 -m 13 -t 36"
@@ -27,7 +27,7 @@ NANO_APPSIZE=1260000
 NANO_CONFSIZE=2048
 NANO_DATASIZE=-1
 
-NANO_PACKAGE_DIR=${MY_NANO_DIR}/kalopa/Pkg
+NANO_PACKAGE_DIR=${MY_NANO_DIR}/robobsd/Pkg
 NANO_PACKAGE_LIST="*"
 
 cust_boot_cfg () (

@@ -1,5 +1,11 @@
 #!/bin/sh
 #
+# Copyright (c) 2016 Kalopa Research.
+#
+# RoboBSD is basically a tuned version of NanoBSD. In fact,
+# about 99.9% of the code in this file is directly from
+# /usr/src/tools/tools/nanobsd/nanobsd.sh
+#
 # Copyright (c) 2005 Poul-Henning Kamp.
 # All rights reserved.
 #
@@ -36,36 +42,36 @@ set -e
 #
 #######################################################################
 
-# Name of this NanoBSD build.  (Used to construct workdir names)
-NANO_NAME=full
+# Name of this RoboBSD build.  (Used to construct workdir names)
+ROBO_NAME=full
 
 # Source tree directory
-NANO_SRC=/usr/src
+ROBO_SRC=/usr/src
 
-# Where nanobsd additional files live under the source tree
-NANO_TOOLS=tools/tools/nanobsd
+# Where RoboBSD additional files live under the source tree
+ROBO_TOOLS=tools/tools/nanobsd
 
 # Where cust_pkg() finds packages to install
-NANO_PACKAGE_DIR=${NANO_SRC}/${NANO_TOOLS}/Pkg
-NANO_PACKAGE_LIST="*"
+ROBO_PACKAGE_DIR=${ROBO_SRC}/${ROBO_TOOLS}/Pkg
+ROBO_PACKAGE_LIST="*"
 
 # where package metadata gets placed
-NANO_PKG_META_BASE=/var/db
+ROBO_PKG_META_BASE=/var/db
 
 # Object tree directory
 # default is subdir of /usr/obj
-#NANO_OBJ=""
+#ROBO_OBJ=""
 
 # The directory to put the final images
-# default is ${NANO_OBJ}
-#NANO_DISKIMGDIR=""
+# default is ${ROBO_OBJ}
+#ROBO_DISKIMGDIR=""
 
 # Make & parallel Make
-NANO_MAKE="make"
-NANO_PMAKE="make -j 3"
+ROBO_MAKE="make"
+ROBO_PMAKE="make -j 3"
 
 # The default name for any image we create.
-NANO_IMGNAME="_.disk.full"
+ROBO_IMGNAME="_.disk.full"
 
 # Options to put in make.conf during buildworld only
 CONF_BUILD=' '
@@ -77,81 +83,82 @@ CONF_INSTALL=' '
 CONF_WORLD=' '
 
 # Kernel config file to use
-NANO_KERNEL=GENERIC
+ROBO_KERNEL=GENERIC
 
 # Kernel modules to install. If empty, no modules are installed.
 # Use "default" to install all built modules.
-NANO_MODULES=
+ROBO_MODULES=
 
 # Customize commands.
-NANO_CUSTOMIZE=""
+ROBO_CUSTOMIZE=""
 
 # Late customize commands.
-NANO_LATE_CUSTOMIZE=""
+ROBO_LATE_CUSTOMIZE=""
 
 # Newfs paramters to use
-NANO_NEWFS="-b 4096 -f 512 -i 8192 -U"
+ROBO_NEWFS="-b 4096 -f 512 -i 8192 -U"
 
 # The drive name of the media at runtime
-NANO_DRIVE=ad0
+ROBO_DRIVE=ad0
 
 # Target media size in 512 bytes sectors
-NANO_MEDIASIZE=2000000
-
-# Number of code images on media (1 or 2)
-NANO_IMAGES=2
+ROBO_MEDIASIZE=2000000
 
 # 0 -> Leave second image all zeroes so it compresses better.
 # 1 -> Initialize second image with a copy of the first
-NANO_INIT_IMG2=1
+ROBO_INIT_IMG2=1
 
 # Size of code file system in 512 bytes sectors
 # If zero, size will be as large as possible.
-NANO_CODESIZE=0
+ROBO_CODESIZE=0
+
+# Size of the app file system in 512 byte sectors
+# If zero: no partion configured.
+ROBO_APPSIZE=0
 
 # Size of configuration file system in 512 bytes sectors
 # Cannot be zero.
-NANO_CONFSIZE=2048
+ROBO_CONFSIZE=2048
 
 # Size of data file system in 512 bytes sectors
 # If zero: no partition configured.
 # If negative: max size possible
-NANO_DATASIZE=0
+ROBO_DATASIZE=0
 
 # Size of the /etc ramdisk in 512 bytes sectors
-NANO_RAM_ETCSIZE=10240
+ROBO_RAM_ETCSIZE=10240
 
 # Size of the /tmp+/var ramdisk in 512 bytes sectors
-NANO_RAM_TMPVARSIZE=10240
+ROBO_RAM_TMPVARSIZE=10240
 
 # Media geometry, only relevant if bios doesn't understand LBA.
-NANO_SECTS=63
-NANO_HEADS=16
+ROBO_SECTS=63
+ROBO_HEADS=16
 
 # boot0 flags/options and configuration
-NANO_BOOT0CFG="-o packet -s 1 -m 3"
-NANO_BOOTLOADER="boot/boot0sio"
+ROBO_BOOT0CFG="-o packet -s 1 -m 3"
+ROBO_BOOTLOADER="boot/boot0sio"
 
 # boot2 flags/options
 # default force serial console
-NANO_BOOT2CFG="-h"
+ROBO_BOOT2CFG="-h"
 
 # Backing type of md(4) device
 # Can be "file" or "swap"
-NANO_MD_BACKING="file"
+ROBO_MD_BACKING="file"
 
 # for swap type md(4) backing, write out the mbr only
-NANO_IMAGE_MBRONLY=true
+ROBO_IMAGE_MBRONLY=true
 
 # Progress Print level
 PPLEVEL=3
 
-# Set NANO_LABEL to non-blank to form the basis for using /dev/ufs/label
-# in preference to /dev/${NANO_DRIVE}
-# Root partition will be ${NANO_LABEL}s{1,2}
-# /cfg partition will be ${NANO_LABEL}s3
-# /data partition will be ${NANO_LABEL}s4
-NANO_LABEL=""
+# Set ROBO_LABEL to non-blank to form the basis for using /dev/ufs/label
+# in preference to /dev/${ROBO_DRIVE}
+# Root partition will be ${ROBO_LABEL}s{1,2}
+# /cfg partition will be ${ROBO_LABEL}s3
+# /data partition will be ${ROBO_LABEL}s4
+ROBO_LABEL=""
 
 #######################################################################
 # Architecture to build.  Corresponds to TARGET_ARCH in a buildworld.
@@ -159,13 +166,16 @@ NANO_LABEL=""
 # conflates the two, so architectures where TARGET != TARGET_ARCH do
 # not work.  This defaults to the arch of the current machine.
 
-NANO_ARCH=`uname -p`
+ROBO_ARCH=`uname -p`
+
+# Directory to poulate /app from
+ROBO_APPDIR=""
 
 # Directory to populate /cfg from
-NANO_CFGDIR=""
+ROBO_CFGDIR=""
 
 # Directory to populate /data from
-NANO_DATADIR=""
+ROBO_DATADIR=""
 
 # src.conf to use when building the image. Defaults to /dev/null for the sake
 # of determinism.
@@ -181,23 +191,23 @@ SRCCONF=${SRCCONF:=/dev/null}
 # run in the world chroot, errors fatal
 CR()
 {
-	chroot ${NANO_WORLDDIR} /bin/sh -exc "$*"
+	chroot ${ROBO_WORLDDIR} /bin/sh -exc "$*"
 }
 
 # run in the world chroot, errors not fatal
 CR0()
 {
-	chroot ${NANO_WORLDDIR} /bin/sh -c "$*" || true
+	chroot ${ROBO_WORLDDIR} /bin/sh -c "$*" || true
 }
 
-nano_cleanup ( ) (
+robo_cleanup() (
 	if [ $? -ne 0 ]; then
 		echo "Error encountered.  Check for errors in last log file." 1>&2
 	fi
 	exit $?
 )
 
-clean_build ( ) (
+clean_build() (
 	pprint 2 "Clean and create object directory (${MAKEOBJDIRPREFIX})"
 
 	if ! rm -xrf ${MAKEOBJDIRPREFIX}/ > /dev/null 2>&1 ; then
@@ -208,166 +218,166 @@ clean_build ( ) (
 	printenv > ${MAKEOBJDIRPREFIX}/_.env
 )
 
-make_conf_build ( ) (
-	pprint 2 "Construct build make.conf ($NANO_MAKE_CONF_BUILD)"
+make_conf_build() (
+	pprint 2 "Construct build make.conf ($ROBO_MAKE_CONF_BUILD)"
 
-	echo "${CONF_WORLD}" > ${NANO_MAKE_CONF_BUILD}
-	echo "${CONF_BUILD}" >> ${NANO_MAKE_CONF_BUILD}
+	echo "${CONF_WORLD}" > ${ROBO_MAKE_CONF_BUILD}
+	echo "${CONF_BUILD}" >> ${ROBO_MAKE_CONF_BUILD}
 )
 
-build_world ( ) (
+build_world() (
 	pprint 2 "run buildworld"
 	pprint 3 "log: ${MAKEOBJDIRPREFIX}/_.bw"
 
-	cd ${NANO_SRC}
-	env TARGET_ARCH=${NANO_ARCH} ${NANO_PMAKE} \
+	cd ${ROBO_SRC}
+	env TARGET_ARCH=${ROBO_ARCH} ${ROBO_PMAKE} \
 		SRCCONF=${SRCCONF} \
-		__MAKE_CONF=${NANO_MAKE_CONF_BUILD} buildworld \
+		__MAKE_CONF=${ROBO_MAKE_CONF_BUILD} buildworld \
 		> ${MAKEOBJDIRPREFIX}/_.bw 2>&1
 )
 
-build_kernel ( ) (
+build_kernel() (
 	local extra
 
-	pprint 2 "build kernel ($NANO_KERNEL)"
+	pprint 2 "build kernel ($ROBO_KERNEL)"
 	pprint 3 "log: ${MAKEOBJDIRPREFIX}/_.bk"
 
 	(
-	if [ -f ${NANO_KERNEL} ] ; then
-		kernconfdir_arg="KERNCONFDIR='$(realpath $(dirname ${NANO_KERNEL}))'"
-		kernconf=$(basename ${NANO_KERNEL})
+	if [ -f ${ROBO_KERNEL} ] ; then
+		kernconfdir_arg="KERNCONFDIR='$(realpath $(dirname ${ROBO_KERNEL}))'"
+		kernconf=$(basename ${ROBO_KERNEL})
 	else
-		kernconf=${NANO_KERNEL}
+		kernconf=${ROBO_KERNEL}
 	fi
 
-	cd ${NANO_SRC};
+	cd ${ROBO_SRC};
 	# unset these just in case to avoid compiler complaints
 	# when cross-building
 	unset TARGET_CPUTYPE
 	# Note: We intentionally build all modules, not only the ones in
-	# NANO_MODULES so the built world can be reused by multiple images.
-	eval "TARGET_ARCH=${NANO_ARCH} ${NANO_PMAKE} buildkernel \
+	# ROBO_MODULES so the built world can be reused by multiple images.
+	eval "TARGET_ARCH=${ROBO_ARCH} ${ROBO_PMAKE} buildkernel \
 		SRCCONF='${SRCCONF}' \
-		__MAKE_CONF='${NANO_MAKE_CONF_BUILD}' \
+		__MAKE_CONF='${ROBO_MAKE_CONF_BUILD}' \
 		${kernconfdir_arg} KERNCONF=${kernconf}"
 	) > ${MAKEOBJDIRPREFIX}/_.bk 2>&1
 )
 
-clean_world ( ) (
-	if [ "${NANO_OBJ}" != "${MAKEOBJDIRPREFIX}" ]; then
-		pprint 2 "Clean and create object directory (${NANO_OBJ})"
-		if ! rm -rxf ${NANO_OBJ}/ > /dev/null 2>&1 ; then
-			chflags -R noschg ${NANO_OBJ}
-			rm -xr ${NANO_OBJ}/
+clean_world() (
+	if [ "${ROBO_OBJ}" != "${MAKEOBJDIRPREFIX}" ]; then
+		pprint 2 "Clean and create object directory (${ROBO_OBJ})"
+		if ! rm -rxf ${ROBO_OBJ}/ > /dev/null 2>&1 ; then
+			chflags -R noschg ${ROBO_OBJ}
+			rm -xr ${ROBO_OBJ}/
 		fi
-		mkdir -p ${NANO_OBJ} ${NANO_WORLDDIR}
-		printenv > ${NANO_OBJ}/_.env
+		mkdir -p ${ROBO_OBJ} ${ROBO_WORLDDIR}
+		printenv > ${ROBO_OBJ}/_.env
 	else
-		pprint 2 "Clean and create world directory (${NANO_WORLDDIR})"
-		if ! rm -rxf ${NANO_WORLDDIR}/ > /dev/null 2>&1 ; then
-			chflags -R noschg ${NANO_WORLDDIR}
-			rm -rxf ${NANO_WORLDDIR}/
+		pprint 2 "Clean and create world directory (${ROBO_WORLDDIR})"
+		if ! rm -rxf ${ROBO_WORLDDIR}/ > /dev/null 2>&1 ; then
+			chflags -R noschg ${ROBO_WORLDDIR}
+			rm -rxf ${ROBO_WORLDDIR}/
 		fi
-		mkdir -p ${NANO_WORLDDIR}
+		mkdir -p ${ROBO_WORLDDIR}
 	fi
 )
 
-make_conf_install ( ) (
-	pprint 2 "Construct install make.conf ($NANO_MAKE_CONF_INSTALL)"
+make_conf_install() (
+	pprint 2 "Construct install make.conf ($ROBO_MAKE_CONF_INSTALL)"
 
-	echo "${CONF_WORLD}" > ${NANO_MAKE_CONF_INSTALL}
-	echo "${CONF_INSTALL}" >> ${NANO_MAKE_CONF_INSTALL}
+	echo "${CONF_WORLD}" > ${ROBO_MAKE_CONF_INSTALL}
+	echo "${CONF_INSTALL}" >> ${ROBO_MAKE_CONF_INSTALL}
 )
 
-install_world ( ) (
+install_world() (
 	pprint 2 "installworld"
-	pprint 3 "log: ${NANO_OBJ}/_.iw"
+	pprint 3 "log: ${ROBO_OBJ}/_.iw"
 
-	cd ${NANO_SRC}
-	env TARGET_ARCH=${NANO_ARCH} \
-	${NANO_MAKE} SRCCONF=${SRCCONF} \
-		__MAKE_CONF=${NANO_MAKE_CONF_INSTALL} installworld \
-		DESTDIR=${NANO_WORLDDIR} \
-		> ${NANO_OBJ}/_.iw 2>&1
-	chflags -R noschg ${NANO_WORLDDIR}
+	cd ${ROBO_SRC}
+	env TARGET_ARCH=${ROBO_ARCH} \
+	${ROBO_MAKE} SRCCONF=${SRCCONF} \
+		__MAKE_CONF=${ROBO_MAKE_CONF_INSTALL} installworld \
+		DESTDIR=${ROBO_WORLDDIR} \
+		> ${ROBO_OBJ}/_.iw 2>&1
+	chflags -R noschg ${ROBO_WORLDDIR}
 )
 
-install_etc ( ) (
+install_etc() (
 
 	pprint 2 "install /etc"
-	pprint 3 "log: ${NANO_OBJ}/_.etc"
+	pprint 3 "log: ${ROBO_OBJ}/_.etc"
 
-	cd ${NANO_SRC}
-	env TARGET_ARCH=${NANO_ARCH} \
-	${NANO_MAKE} SRCCONF=${SRCCONF} \
-		__MAKE_CONF=${NANO_MAKE_CONF_INSTALL} distribution \
-		DESTDIR=${NANO_WORLDDIR} \
-		> ${NANO_OBJ}/_.etc 2>&1
+	cd ${ROBO_SRC}
+	env TARGET_ARCH=${ROBO_ARCH} \
+	${ROBO_MAKE} SRCCONF=${SRCCONF} \
+		__MAKE_CONF=${ROBO_MAKE_CONF_INSTALL} distribution \
+		DESTDIR=${ROBO_WORLDDIR} \
+		> ${ROBO_OBJ}/_.etc 2>&1
 	# make.conf doesn't get created by default, but some ports need it
 	# so they can spam it.
-	cp /dev/null ${NANO_WORLDDIR}/etc/make.conf
+	cp /dev/null ${ROBO_WORLDDIR}/etc/make.conf
 )
 
-install_kernel ( ) (
+install_kernel() (
 	local extra
 
-	pprint 2 "install kernel ($NANO_KERNEL)"
-	pprint 3 "log: ${NANO_OBJ}/_.ik"
+	pprint 2 "install kernel ($ROBO_KERNEL)"
+	pprint 3 "log: ${ROBO_OBJ}/_.ik"
 
 	(
-	if [ -f ${NANO_KERNEL} ] ; then
-		kernconfdir_arg="KERNCONFDIR='$(realpath $(dirname ${NANO_KERNEL}))'"
-		kernconf=$(basename ${NANO_KERNEL})
+	if [ -f ${ROBO_KERNEL} ] ; then
+		kernconfdir_arg="KERNCONFDIR='$(realpath $(dirname ${ROBO_KERNEL}))'"
+		kernconf=$(basename ${ROBO_KERNEL})
 	else
-		kernconf=${NANO_KERNEL}
+		kernconf=${ROBO_KERNEL}
 	fi
 
-	# Install all built modules if NANO_MODULES=default,
-	# else install only listed modules (none if NANO_MODULES is empty).
-	if [ "${NANO_MODULES}" != "default" ]; then
-		modules_override_arg="MODULES_OVERRIDE='${NANO_MODULES}'"
+	# Install all built modules if ROBO_MODULES=default,
+	# else install only listed modules (none if ROBO_MODULES is empty).
+	if [ "${ROBO_MODULES}" != "default" ]; then
+		modules_override_arg="MODULES_OVERRIDE='${ROBO_MODULES}'"
 	fi
 
-	cd ${NANO_SRC}
-	eval "TARGET_ARCH=${NANO_ARCH} ${NANO_MAKE} installkernel \
-		DESTDIR='${NANO_WORLDDIR}' \
+	cd ${ROBO_SRC}
+	eval "TARGET_ARCH=${ROBO_ARCH} ${ROBO_MAKE} installkernel \
+		DESTDIR='${ROBO_WORLDDIR}' \
 		SRCCONF='${SRCCONF}' \
-		__MAKE_CONF='${NANO_MAKE_CONF_INSTALL}' \
+		__MAKE_CONF='${ROBO_MAKE_CONF_INSTALL}' \
 		${kernconfdir_arg} KERNCONF=${kernconf} \
 		${modules_override_arg}"
-	) > ${NANO_OBJ}/_.ik 2>&1
+	) > ${ROBO_OBJ}/_.ik 2>&1
 )
 
 run_customize() (
 
 	pprint 2 "run customize scripts"
-	for c in $NANO_CUSTOMIZE
+	for c in $ROBO_CUSTOMIZE
 	do
 		pprint 2 "customize \"$c\""
-		pprint 3 "log: ${NANO_OBJ}/_.cust.$c"
+		pprint 3 "log: ${ROBO_OBJ}/_.cust.$c"
 		pprint 4 "`type $c`"
-		( set -x ; $c ) > ${NANO_OBJ}/_.cust.$c 2>&1
+		( set -x ; $c ) > ${ROBO_OBJ}/_.cust.$c 2>&1
 	done
 )
 
 run_late_customize() (
 
 	pprint 2 "run late customize scripts"
-	for c in $NANO_LATE_CUSTOMIZE
+	for c in $ROBO_LATE_CUSTOMIZE
 	do
 		pprint 2 "late customize \"$c\""
-		pprint 3 "log: ${NANO_OBJ}/_.late_cust.$c"
+		pprint 3 "log: ${ROBO_OBJ}/_.late_cust.$c"
 		pprint 4 "`type $c`"
-		( set -x ; $c ) > ${NANO_OBJ}/_.late_cust.$c 2>&1
+		( set -x ; $c ) > ${ROBO_OBJ}/_.late_cust.$c 2>&1
 	done
 )
 
-setup_nanobsd ( ) (
-	pprint 2 "configure nanobsd setup"
-	pprint 3 "log: ${NANO_OBJ}/_.dl"
+setup_robobsd() (
+	pprint 2 "configure robobsd setup"
+	pprint 3 "log: ${ROBO_OBJ}/_.dl"
 
 	(
-	cd ${NANO_WORLDDIR}
+	cd ${ROBO_WORLDDIR}
 
 	# Move /usr/local/etc to /etc/local so that the /cfg stuff
 	# can stomp on it.  Otherwise packages like ipsec-tools which
@@ -393,24 +403,24 @@ setup_nanobsd ( ) (
 		find $d -print | cpio -dumpl conf/base/
 	done
 
-	echo "$NANO_RAM_ETCSIZE" > conf/base/etc/md_size
-	echo "$NANO_RAM_TMPVARSIZE" > conf/base/var/md_size
+	echo "$ROBO_RAM_ETCSIZE" > conf/base/etc/md_size
+	echo "$ROBO_RAM_TMPVARSIZE" > conf/base/var/md_size
 
 	# pick up config files from the special partition
-	echo "mount -o ro /dev/${NANO_DRIVE}s3" > conf/default/etc/remount
+	echo "mount -o ro /dev/${ROBO_DRIVE}s3" > conf/default/etc/remount
 
 	# Put /tmp on the /var ramdisk (could be symlink already)
 	test -d tmp && rmdir tmp || rm -f tmp
 	ln -s var/tmp tmp
 
-	) > ${NANO_OBJ}/_.dl 2>&1
+	) > ${ROBO_OBJ}/_.dl 2>&1
 )
 
-setup_nanobsd_etc ( ) (
-	pprint 2 "configure nanobsd /etc"
+setup_robobsd_etc() (
+	pprint 2 "configure robobsd /etc"
 
 	(
-	cd ${NANO_WORLDDIR}
+	cd ${ROBO_WORLDDIR}
 
 	# create diskless marker file
 	touch etc/diskless
@@ -419,41 +429,49 @@ setup_nanobsd_etc ( ) (
 	echo "root_rw_mount=NO" >> etc/defaults/rc.conf
 
 	# save config file for scripts
-	echo "NANO_DRIVE=${NANO_DRIVE}" > etc/nanobsd.conf
+	echo "ROBO_DRIVE=${ROBO_DRIVE}" > etc/robobsd.conf
 
-	echo "/dev/${NANO_DRIVE}s1a / ufs ro 1 1" > etc/fstab
-	echo "/dev/${NANO_DRIVE}s3 /cfg ufs rw,noauto 2 2" >> etc/fstab
+	echo "/dev/${ROBO_DRIVE}s1a / ufs ro 10 1" > etc/fstab
+	if [ $ROBO_APPSIZE -ne 0] ; then
+		echo "/dev/${ROBO_DRIVE}s2 /app ufs ro 10 1" > etc/fstab
+		mkdir -p app
+	fi
+	echo "/dev/${ROBO_DRIVE}s3 /cfg ufs rw,noauto 2 2" >> etc/fstab
 	mkdir -p cfg
+	if [ $ROBO_DATASIZE -ne 0] ; then
+		echo "/dev/${ROBO_DRIVE}s4 /data ufs rw 2 3" > etc/fstab
+		mkdir -p data
+	fi
 	)
 )
 
 prune_usr() (
 
 	# Remove all empty directories in /usr 
-	find ${NANO_WORLDDIR}/usr -type d -depth -print |
+	find ${ROBO_WORLDDIR}/usr -type d -depth -print |
 		while read d
 		do
 			rmdir $d > /dev/null 2>&1 || true 
 		done
 )
 
-newfs_part ( ) (
+newfs_part() (
 	local dev mnt lbl
 	dev=$1
 	mnt=$2
 	lbl=$3
-	echo newfs ${NANO_NEWFS} ${NANO_LABEL:+-L${NANO_LABEL}${lbl}} ${dev}
-	newfs ${NANO_NEWFS} ${NANO_LABEL:+-L${NANO_LABEL}${lbl}} ${dev}
+	echo newfs ${ROBO_NEWFS} ${ROBO_LABEL:+-L${ROBO_LABEL}${lbl}} ${dev}
+	newfs ${ROBO_NEWFS} ${ROBO_LABEL:+-L${ROBO_LABEL}${lbl}} ${dev}
 	mount -o async ${dev} ${mnt}
 )
 
 # Convenient spot to work around any umount issues that your build environment
 # hits by overriding this method.
-nano_umount () (
+robo_umount() (
 	umount ${1}
 )
 
-populate_slice ( ) (
+populate_slice() (
 	local dev dir mnt lbl
 	dev=$1
 	dir=$2
@@ -467,40 +485,51 @@ populate_slice ( ) (
 		find . -print | grep -Ev '/(CVS|\.svn|\.hg|\.git)' | cpio -dumpv ${mnt}
 	fi
 	df -i ${mnt}
-	nano_umount ${mnt}
+	robo_umount ${mnt}
 )
 
-populate_cfg_slice ( ) (
+populate_app_slice() (
 	populate_slice "$1" "$2" "$3" "$4"
 )
 
-populate_data_slice ( ) (
+populate_cfg_slice() (
 	populate_slice "$1" "$2" "$3" "$4"
 )
 
-create_i386_diskimage ( ) (
+populate_data_slice() (
+	populate_slice "$1" "$2" "$3" "$4"
+)
+
+create_i386_diskimage() (
 	pprint 2 "build diskimage"
-	pprint 3 "log: ${NANO_OBJ}/_.di"
+	pprint 3 "log: ${ROBO_OBJ}/_.di"
 
 	(
-	echo $NANO_MEDIASIZE $NANO_IMAGES \
-		$NANO_SECTS $NANO_HEADS \
-		$NANO_CODESIZE $NANO_CONFSIZE $NANO_DATASIZE |
+	echo $ROBO_MEDIASIZE \
+		$ROBO_SECTS $ROBO_HEADS \
+		$ROBO_CODESIZE $ROBO_CONFSIZE $ROBO_APPSIZE $ROBO_DATASIZE |
 	awk '
 	{
 		printf "# %s\n", $0
 
 		# size of cylinder in sectors
-		cs = $3 * $4
+		cs = $2 * $3
 
 		# number of full cylinders on media
 		cyl = int ($1 / cs)
 
 		# output fdisk geometry spec, truncate cyls to 1023
 		if (cyl <= 1023)
-			print "g c" cyl " h" $4 " s" $3
+			print "g c" cyl " h" $3 " s" $2
 		else
-			print "g c" 1023 " h" $4 " s" $3
+			print "g c" 1023 " h" $3 " s" $2
+
+		if ($6 > 0) {
+			# size of app partition in full cylinders
+			asl = int (($6 + cs - 1) / cs)
+		} else {
+			asl = 0;
+		}
 
 		if ($7 > 0) { 
 			# size of data partition in full cylinders
@@ -510,24 +539,23 @@ create_i386_diskimage ( ) (
 		}
 
 		# size of config partition in full cylinders
-		csl = int (($6 + cs - 1) / cs)
+		csl = int (($5 + cs - 1) / cs)
 
-		if ($5 == 0) {
+		if ($4 == 0) {
 			# size of image partition(s) in full cylinders
-			isl = int ((cyl - dsl - csl) / $2)
+			isl = int (cyl - dsl - asl - csl)
 		} else {
-			isl = int (($5 + cs - 1) / cs)
+			isl = int (($4 + cs - 1) / cs)
 		}
 
 		# First image partition start at second track
-		print "p 1 165 " $3, isl * cs - $3
+		print "p 1 165 " $2, isl * cs - $2
 		c = isl * cs;
 
-		# Second image partition (if any) also starts offset one 
-		# track to keep them identical.
-		if ($2 > 1) {
-			print "p 2 165 " $3 + c, isl * cs - $3
-			c += isl * cs;
+		# App partition (if any) starts at cylinder boundary.
+		if ($6 > 0) {
+			print "p 2 165 " c, asl * cs
+			c += asl * cs
 		}
 
 		# Config partition starts at cylinder boundary.
@@ -549,101 +577,88 @@ create_i386_diskimage ( ) (
 		# for booting the image from a USB device to work.
 		print "a 1"
 	}
-	' > ${NANO_OBJ}/_.fdisk
+	' > ${ROBO_OBJ}/_.fdisk
 
-	IMG=${NANO_DISKIMGDIR}/${NANO_IMGNAME}
-	MNT=${NANO_OBJ}/_.mnt
+	IMG=${ROBO_DISKIMGDIR}/${ROBO_IMGNAME}
+	MNT=${ROBO_OBJ}/_.mnt
 	mkdir -p ${MNT}
 
-	if [ "${NANO_MD_BACKING}" = "swap" ] ; then
-		MD=`mdconfig -a -t swap -s ${NANO_MEDIASIZE} -x ${NANO_SECTS} \
-			-y ${NANO_HEADS}`
+	if [ "${ROBO_MD_BACKING}" = "swap" ] ; then
+		MD=`mdconfig -a -t swap -s ${ROBO_MEDIASIZE} -x ${ROBO_SECTS} \
+			-y ${ROBO_HEADS}`
 	else
 		echo "Creating md backing file..."
 		rm -f ${IMG}
-		dd if=/dev/zero of=${IMG} seek=${NANO_MEDIASIZE} count=0
-		MD=`mdconfig -a -t vnode -f ${IMG} -x ${NANO_SECTS} \
-			-y ${NANO_HEADS}`
+		dd if=/dev/zero of=${IMG} seek=${ROBO_MEDIASIZE} count=0
+		MD=`mdconfig -a -t vnode -f ${IMG} -x ${ROBO_SECTS} \
+			-y ${ROBO_HEADS}`
 	fi
 
-	trap "echo 'Running exit trap code' ; df -i ${MNT} ; nano_umount ${MNT} || true ; mdconfig -d -u $MD" 1 2 15 EXIT
+	trap "echo 'Running exit trap code' ; df -i ${MNT} ; robo_umount ${MNT} || true ; mdconfig -d -u $MD" 1 2 15 EXIT
 
-	fdisk -i -f ${NANO_OBJ}/_.fdisk ${MD}
+	fdisk -i -f ${ROBO_OBJ}/_.fdisk ${MD}
 	fdisk ${MD}
 	# XXX: params
 	# XXX: pick up cached boot* files, they may not be in image anymore.
-	boot0cfg -B -b ${NANO_WORLDDIR}/${NANO_BOOTLOADER} ${NANO_BOOT0CFG} ${MD}
-	bsdlabel -w -B -b ${NANO_WORLDDIR}/boot/boot ${MD}s1
+	boot0cfg -B -b ${ROBO_WORLDDIR}/${ROBO_BOOTLOADER} ${ROBO_BOOT0CFG} ${MD}
+	bsdlabel -w -B -b ${ROBO_WORLDDIR}/boot/boot ${MD}s1
 	bsdlabel ${MD}s1
 
 	# Create first image
-	populate_slice /dev/${MD}s1a ${NANO_WORLDDIR} ${MNT} "s1a"
+	populate_slice /dev/${MD}s1a ${ROBO_WORLDDIR} ${MNT} "s1a"
 	mount /dev/${MD}s1a ${MNT}
 	echo "Generating mtree..."
-	( cd ${MNT} && mtree -c ) > ${NANO_OBJ}/_.mtree
-	( cd ${MNT} && du -k ) > ${NANO_OBJ}/_.du
-	nano_umount ${MNT}
+	( cd ${MNT} && mtree -c ) > ${ROBO_OBJ}/_.mtree
+	( cd ${MNT} && du -k ) > ${ROBO_OBJ}/_.du
+	robo_umount ${MNT}
 
-	if [ $NANO_IMAGES -gt 1 -a $NANO_INIT_IMG2 -gt 0 ] ; then
-		# Duplicate to second image (if present)
-		echo "Duplicating to second image..."
-		dd conv=sparse if=/dev/${MD}s1 of=/dev/${MD}s2 bs=64k
-		mount /dev/${MD}s2a ${MNT}
-		for f in ${MNT}/etc/fstab ${MNT}/conf/base/etc/fstab
-		do
-			sed -i "" "s=${NANO_DRIVE}s1=${NANO_DRIVE}s2=g" $f
-		done
-		nano_umount ${MNT}
-		# Override the label from the first partition so we
-		# don't confuse glabel with duplicates.
-		if [ ! -z ${NANO_LABEL} ]; then
-			tunefs -L ${NANO_LABEL}"s2a" /dev/${MD}s2a
-		fi
+	if [ $ROBO_APPSIZE -ne 0] ; then
+		populate_app_slice /dev/${MD}s2 "${ROBO_APPDIR}" ${MNT} "s2"
 	fi
-	
+
 	# Create Config slice
-	populate_cfg_slice /dev/${MD}s3 "${NANO_CFGDIR}" ${MNT} "s3"
+	populate_cfg_slice /dev/${MD}s3 "${ROBO_CFGDIR}" ${MNT} "s3"
 
 	# Create Data slice, if any.
-	if [ $NANO_DATASIZE -ne 0 ] ; then
-		populate_data_slice /dev/${MD}s4 "${NANO_DATADIR}" ${MNT} "s4"
+	if [ $ROBO_DATASIZE -ne 0 ] ; then
+		populate_data_slice /dev/${MD}s4 "${ROBO_DATADIR}" ${MNT} "s4"
 	fi
 
-	if [ "${NANO_MD_BACKING}" = "swap" ] ; then
-		if [ ${NANO_IMAGE_MBRONLY} ]; then
+	if [ "${ROBO_MD_BACKING}" = "swap" ] ; then
+		if [ ${ROBO_IMAGE_MBRONLY} ]; then
 			echo "Writing out _.disk.mbr..."
-			dd if=/dev/${MD} of=${NANO_DISKIMGDIR}/_.disk.mbr bs=512 count=1
+			dd if=/dev/${MD} of=${ROBO_DISKIMGDIR}/_.disk.mbr bs=512 count=1
 		else
-			echo "Writing out ${NANO_IMGNAME}..."
+			echo "Writing out ${ROBO_IMGNAME}..."
 			dd if=/dev/${MD} of=${IMG} bs=64k
 		fi
 
-		echo "Writing out ${NANO_IMGNAME}..."
+		echo "Writing out ${ROBO_IMGNAME}..."
 		dd conv=sparse if=/dev/${MD} of=${IMG} bs=64k
 	fi
 
 	if ${do_copyout_partition} ; then
 		echo "Writing out _.disk.image..."
-		dd conv=sparse if=/dev/${MD}s1 of=${NANO_DISKIMGDIR}/_.disk.image bs=64k
+		dd conv=sparse if=/dev/${MD}s1 of=${ROBO_DISKIMGDIR}/_.disk.image bs=64k
 	fi
 	mdconfig -d -u $MD
 
 	trap - 1 2 15
-	trap nano_cleanup EXIT
+	trap robo_cleanup EXIT
 
-	) > ${NANO_OBJ}/_.di 2>&1
+	) > ${ROBO_OBJ}/_.di 2>&1
 )
 
 # i386 and amd64 are identical for disk images
-create_amd64_diskimage ( ) (
+create_amd64_diskimage() (
 	create_i386_diskimage
 )
 
-last_orders () (
+last_orders() (
 	# Redefine this function with any last orders you may have
 	# after the build completed, for instance to copy the finished
 	# image to a more convenient place:
-	# cp ${NANO_DISKIMGDIR}/_.disk.image /home/ftp/pub/nanobsd.disk
+	# cp ${ROBO_DISKIMGDIR}/_.disk.image /home/ftp/pub/robobsd.disk
 	true
 )
 
@@ -657,11 +672,11 @@ last_orders () (
 # Common Flash device geometries
 #
 
-FlashDevice () {
-	if [ -d ${NANO_TOOLS} ] ; then
-		. ${NANO_TOOLS}/FlashDevice.sub
+FlashDevice() {
+	if [ -d ${ROBO_TOOLS} ] ; then
+		. ${ROBO_TOOLS}/FlashDevice.sub
 	else
-		. ${NANO_SRC}/${NANO_TOOLS}/FlashDevice.sub
+		. ${ROBO_SRC}/${ROBO_TOOLS}/FlashDevice.sub
 	fi
 	sub_FlashDevice $1 $2
 }
@@ -672,7 +687,7 @@ FlashDevice () {
 # Usage:
 #	UsbDevice Generic 1000	# a generic flash key sold as having 1GB
 #
-# This function will set NANO_MEDIASIZE, NANO_HEADS and NANO_SECTS for you.
+# This function will set ROBO_MEDIASIZE, ROBO_HEADS and ROBO_SECTS for you.
 #
 # Note that the capacity of a flash key is usually advertised in MB or
 # GB, *not* MiB/GiB. As such, the precise number of cylinders available
@@ -686,18 +701,18 @@ FlashDevice () {
 # The generic-hdd device is preferred for flash devices larger than 1GB.
 #
 
-UsbDevice () {
+UsbDevice() {
 	a1=`echo $1 | tr '[:upper:]' '[:lower:]'`
 	case $a1 in
 	generic-fdd)
-		NANO_HEADS=64
-		NANO_SECTS=32
-		NANO_MEDIASIZE=$(( $2 * 1000 * 1000 / 512 ))
+		ROBO_HEADS=64
+		ROBO_SECTS=32
+		ROBO_MEDIASIZE=$(( $2 * 1000 * 1000 / 512 ))
 		;;
 	generic|generic-hdd)
-		NANO_HEADS=255
-		NANO_SECTS=63
-		NANO_MEDIASIZE=$(( $2 * 1000 * 1000 / 512 ))
+		ROBO_HEADS=255
+		ROBO_SECTS=63
+		ROBO_MEDIASIZE=$(( $2 * 1000 * 1000 / 512 ))
 		;;
 	*)
 		echo "Unknown USB flash device"
@@ -709,71 +724,71 @@ UsbDevice () {
 #######################################################################
 # Setup serial console
 
-cust_comconsole () (
+cust_comconsole() (
 	# Enable getty on console
-	sed -i "" -e /tty[du]0/s/off/on/ ${NANO_WORLDDIR}/etc/ttys
+	sed -i "" -e /tty[du]0/s/off/on/ ${ROBO_WORLDDIR}/etc/ttys
 
 	# Disable getty on syscons devices
-	sed -i "" -e '/^ttyv[0-8]/s/	on/	off/' ${NANO_WORLDDIR}/etc/ttys
+	sed -i "" -e '/^ttyv[0-8]/s/	on/	off/' ${ROBO_WORLDDIR}/etc/ttys
 
 	# Tell loader to use serial console early.
-	echo "${NANO_BOOT2CFG}" > ${NANO_WORLDDIR}/boot.config
+	echo "${ROBO_BOOT2CFG}" > ${ROBO_WORLDDIR}/boot.config
 )
 
 #######################################################################
 # Allow root login via ssh
 
-cust_allow_ssh_root () (
+cust_allow_ssh_root() (
 	sed -i "" -e '/PermitRootLogin/s/.*/PermitRootLogin yes/' \
-	    ${NANO_WORLDDIR}/etc/ssh/sshd_config
+	    ${ROBO_WORLDDIR}/etc/ssh/sshd_config
 )
 
 #######################################################################
 # Install the stuff under ./Files
 
-cust_install_files () (
-	cd ${NANO_TOOLS}/Files
-	find . -print | grep -Ev '/(CVS|\.svn|\.hg|\.git)' | cpio -Ldumpv ${NANO_WORLDDIR}
+cust_install_files() (
+	cd ${ROBO_TOOLS}/Files
+	find . -print | grep -Ev '/(CVS|\.svn|\.hg|\.git)' | cpio -Ldumpv ${ROBO_WORLDDIR}
 )
 
 #######################################################################
-# Install packages from ${NANO_PACKAGE_DIR}
+# Install packages from ${ROBO_PACKAGE_DIR}
 
-cust_pkg () (
+cust_pkg() (
 
 	# If the package directory doesn't exist, we're done.
-	if [ ! -d ${NANO_PACKAGE_DIR} ]; then
+	if [ ! -d ${ROBO_PACKAGE_DIR} ]; then
 		echo "DONE 0 packages"
 		return 0
 	fi
 
 	# Copy packages into chroot
-	mkdir -p ${NANO_WORLDDIR}/Pkg ${NANO_WORLDDIR}/${NANO_PKG_META_BASE}/pkg
+	mkdir -p ${ROBO_WORLDDIR}/Pkg ${ROBO_WORLDDIR}/${ROBO_PKG_META_BASE}/pkg
 	(
-		cd ${NANO_PACKAGE_DIR}
-		find ${NANO_PACKAGE_LIST} -print |
-		    cpio -Ldumpv ${NANO_WORLDDIR}/Pkg
+		cd ${ROBO_PACKAGE_DIR}
+		find ${ROBO_PACKAGE_LIST} -print |
+		    cpio -Ldumpv ${ROBO_WORLDDIR}/Pkg
 	)
 
 	# Count & report how many we have to install
-	todo=`ls ${NANO_WORLDDIR}/Pkg | wc -l`
+	todo=`ls ${ROBO_WORLDDIR}/Pkg | wc -l`
 	echo "=== TODO: $todo"
-	ls ${NANO_WORLDDIR}/Pkg
+	ls ${ROBO_WORLDDIR}/Pkg
 	echo "==="
 	while true
 	do
 		# Record how many we have now
-		have=`ls ${NANO_WORLDDIR}/${NANO_PKG_META_BASE}/pkg | wc -l`
+		have=`ls ${ROBO_WORLDDIR}/${ROBO_PKG_META_BASE}/pkg | wc -l`
 
 		# Attempt to install more packages
 		# ...but no more than 200 at a time due to pkg_add's internal
 		# limitations.
-		CR0 'ls Pkg/*tbz | xargs -n 200 env PKG_DBDIR='${NANO_PKG_META_BASE}'/pkg pkg_add -v -F'
+		CR0 'ls Pkg/*tbz | xargs -n 200 env PKG_DBDIR='${ROBO_PKG_META_BASE}'/pkg pkg_add -v -F'
 
 		# See what that got us
-		now=`ls ${NANO_WORLDDIR}/${NANO_PKG_META_BASE}/pkg | wc -l`
+		now=`ls ${ROBO_WORLDDIR}/${ROBO_PKG_META_BASE}/pkg | wc -l`
 		echo "=== NOW $now"
-		ls ${NANO_WORLDDIR}/${NANO_PKG_META_BASE}/pkg
+		ls ${ROBO_WORLDDIR}/${ROBO_PKG_META_BASE}/pkg
 		echo "==="
 
 
@@ -785,48 +800,48 @@ cust_pkg () (
 			exit 2
 		fi
 	done
-	rm -rxf ${NANO_WORLDDIR}/Pkg
+	rm -rxf ${ROBO_WORLDDIR}/Pkg
 )
 
-cust_pkgng () (
+cust_pkgng() (
 
 	# If the package directory doesn't exist, we're done.
-	if [ ! -d ${NANO_PACKAGE_DIR} ]; then
+	if [ ! -d ${ROBO_PACKAGE_DIR} ]; then
 		echo "DONE 0 packages"
 		return 0
 	fi
 
 	# Find a pkg-* package
-	for x in `find -s ${NANO_PACKAGE_DIR} -iname 'pkg-*'`; do
-		_NANO_PKG_PACKAGE=`basename "$x"`
+	for x in `find -s ${ROBO_PACKAGE_DIR} -iname 'pkg-*'`; do
+		_ROBO_PKG_PACKAGE=`basename "$x"`
 	done
-	if [ -z "${_NANO_PKG_PACKAGE}" -o ! -f "${NANO_PACKAGE_DIR}/${_NANO_PKG_PACKAGE}" ]; then
+	if [ -z "${_ROBO_PKG_PACKAGE}" -o ! -f "${ROBO_PACKAGE_DIR}/${_ROBO_PKG_PACKAGE}" ]; then
 		echo "FAILED: need a pkg/ package for bootstrapping"
 		exit 2
 	fi
 
 	# Copy packages into chroot
-	mkdir -p ${NANO_WORLDDIR}/Pkg
+	mkdir -p ${ROBO_WORLDDIR}/Pkg
 	(
-		cd ${NANO_PACKAGE_DIR}
-		find ${NANO_PACKAGE_LIST} -print |
-		cpio -Ldumpv ${NANO_WORLDDIR}/Pkg
+		cd ${ROBO_PACKAGE_DIR}
+		find ${ROBO_PACKAGE_LIST} -print |
+		cpio -Ldumpv ${ROBO_WORLDDIR}/Pkg
 	)
 
 	#Bootstrap pkg
-	CR env ASSUME_ALWAYS_YES=YES SIGNATURE_TYPE=none /usr/sbin/pkg add /Pkg/${_NANO_PKG_PACKAGE}
+	CR env ASSUME_ALWAYS_YES=YES SIGNATURE_TYPE=none /usr/sbin/pkg add /Pkg/${_ROBO_PKG_PACKAGE}
 	CR pkg -N >/dev/null 2>&1
 	if [ "$?" -ne "0" ]; then
 		echo "FAILED: pkg bootstrapping faied"
 		exit 2
 	fi
-	rm -f ${NANO_WORLDDIR}/Pkg/pkg-*
+	rm -f ${ROBO_WORLDDIR}/Pkg/pkg-*
 
 	# Count & report how many we have to install
-	todo=`ls ${NANO_WORLDDIR}/Pkg | /usr/bin/wc -l`
+	todo=`ls ${ROBO_WORLDDIR}/Pkg | /usr/bin/wc -l`
 	todo=$(expr $todo + 1) # add one for pkg since it is installed already
 	echo "=== TODO: $todo"
-	ls ${NANO_WORLDDIR}/Pkg
+	ls ${ROBO_WORLDDIR}/Pkg
 	echo "==="
 	while true
 	do
@@ -849,15 +864,15 @@ cust_pkgng () (
 			exit 2
 		fi
 	done
-	rm -rxf ${NANO_WORLDDIR}/Pkg
+	rm -rxf ${ROBO_WORLDDIR}/Pkg
 )
 
 #######################################################################
 # Convenience function:
 # 	Register all args as customize function.
 
-customize_cmd () {
-	NANO_CUSTOMIZE="$NANO_CUSTOMIZE $*"
+customize_cmd() {
+	ROBO_CUSTOMIZE="$ROBO_CUSTOMIZE $*"
 }
 
 #######################################################################
@@ -865,8 +880,8 @@ customize_cmd () {
 # 	Register all args as late customize function to run just before
 #	image creation.
 
-late_customize_cmd () {
-	NANO_LATE_CUSTOMIZE="$NANO_LATE_CUSTOMIZE $*"
+late_customize_cmd() {
+	ROBO_LATE_CUSTOMIZE="$ROBO_LATE_CUSTOMIZE $*"
 }
 
 #######################################################################
@@ -879,12 +894,12 @@ late_customize_cmd () {
 #	Print $2 at level $1.
 pprint() (
     if [ "$1" -le $PPLEVEL ]; then
-	runtime=$(( `date +%s` - $NANO_STARTTIME ))
+	runtime=$(( `date +%s` - $ROBO_STARTTIME ))
 	printf "%s %.${1}s %s\n" "`date -u -r $runtime +%H:%M:%S`" "#####" "$2" 1>&3
     fi
 )
 
-usage () {
+usage() {
 	(
 	echo "Usage: $0 [-bfiknqvw] [-c config_file]"
 	echo "	-b	suppress builds (both kernel and world)"
@@ -935,7 +950,7 @@ do
 		# Make config file path available to the config file
 		# itself so that it can access additional files relative
 		# to its own location.
-		NANO_CONFIG=$2
+		ROBO_CONFIG=$2
 		. "$2"
 		shift
 		shift
@@ -978,66 +993,65 @@ if [ $# -gt 0 ] ; then
 	usage
 fi
 
-trap nano_cleanup EXIT
+trap robo_cleanup EXIT
 
 #######################################################################
 # Setup and Export Internal variables
 #
-test -n "${NANO_OBJ}" || NANO_OBJ=/usr/obj/nanobsd.${NANO_NAME}/
-test -n "${MAKEOBJDIRPREFIX}" || MAKEOBJDIRPREFIX=${NANO_OBJ}
-test -n "${NANO_DISKIMGDIR}" || NANO_DISKIMGDIR=${NANO_OBJ}
+test -n "${ROBO_OBJ}" || ROBO_OBJ=/usr/obj/robobsd.${ROBO_NAME}/
+test -n "${MAKEOBJDIRPREFIX}" || MAKEOBJDIRPREFIX=${ROBO_OBJ}
+test -n "${ROBO_DISKIMGDIR}" || ROBO_DISKIMGDIR=${ROBO_OBJ}
 
-NANO_WORLDDIR=${NANO_OBJ}/_.w
-NANO_MAKE_CONF_BUILD=${MAKEOBJDIRPREFIX}/make.conf.build
-NANO_MAKE_CONF_INSTALL=${NANO_OBJ}/make.conf.install
+ROBO_WORLDDIR=${ROBO_OBJ}/_.w
+ROBO_MAKE_CONF_BUILD=${MAKEOBJDIRPREFIX}/make.conf.build
+ROBO_MAKE_CONF_INSTALL=${ROBO_OBJ}/make.conf.install
 
-if [ -d ${NANO_TOOLS} ] ; then
+if [ -d ${ROBO_TOOLS} ] ; then
 	true
-elif [ -d ${NANO_SRC}/${NANO_TOOLS} ] ; then
-	NANO_TOOLS=${NANO_SRC}/${NANO_TOOLS}
+elif [ -d ${ROBO_SRC}/${ROBO_TOOLS} ] ; then
+	ROBO_TOOLS=${ROBO_SRC}/${ROBO_TOOLS}
 else
-	echo "NANO_TOOLS directory does not exist" 1>&2
+	echo "ROBO_TOOLS directory does not exist" 1>&2
 	exit 1
 fi
 
 if $do_clean ; then
 	true
 else
-	NANO_MAKE="${NANO_MAKE} -DNO_CLEAN"
-	NANO_PMAKE="${NANO_PMAKE} -DNO_CLEAN"
+	ROBO_MAKE="${ROBO_MAKE} -DNO_CLEAN"
+	ROBO_PMAKE="${ROBO_PMAKE} -DNO_CLEAN"
 fi
 
-# Override user's NANO_DRIVE if they specified a NANO_LABEL
-if [ ! -z "${NANO_LABEL}" ]; then
-	NANO_DRIVE=ufs/${NANO_LABEL}
+# Override user's ROBO_DRIVE if they specified a ROBO_LABEL
+if [ ! -z "${ROBO_LABEL}" ]; then
+	ROBO_DRIVE=ufs/${ROBO_LABEL}
 fi
 
 export MAKEOBJDIRPREFIX
 
-export NANO_ARCH
-export NANO_CODESIZE
-export NANO_CONFSIZE
-export NANO_CUSTOMIZE
-export NANO_DATASIZE
-export NANO_DRIVE
-export NANO_HEADS
-export NANO_IMAGES
-export NANO_IMGNAME
-export NANO_MAKE
-export NANO_MAKE_CONF_BUILD
-export NANO_MAKE_CONF_INSTALL
-export NANO_MEDIASIZE
-export NANO_NAME
-export NANO_NEWFS
-export NANO_OBJ
-export NANO_PMAKE
-export NANO_SECTS
-export NANO_SRC
-export NANO_TOOLS
-export NANO_WORLDDIR
-export NANO_BOOT0CFG
-export NANO_BOOTLOADER
-export NANO_LABEL
+export ROBO_ARCH
+export ROBO_CODESIZE
+export ROBO_CONFSIZE
+export ROBO_CUSTOMIZE
+export ROBO_DATASIZE
+export ROBO_DRIVE
+export ROBO_HEADS
+export ROBO_IMGNAME
+export ROBO_MAKE
+export ROBO_MAKE_CONF_BUILD
+export ROBO_MAKE_CONF_INSTALL
+export ROBO_MEDIASIZE
+export ROBO_NAME
+export ROBO_NEWFS
+export ROBO_OBJ
+export ROBO_PMAKE
+export ROBO_SECTS
+export ROBO_SRC
+export ROBO_TOOLS
+export ROBO_WORLDDIR
+export ROBO_BOOT0CFG
+export ROBO_BOOTLOADER
+export ROBO_LABEL
 
 #######################################################################
 # And then it is as simple as that...
@@ -1045,8 +1059,8 @@ export NANO_LABEL
 # File descriptor 3 is used for logging output, see pprint
 exec 3>&1
 
-NANO_STARTTIME=`date +%s`
-pprint 1 "NanoBSD image ${NANO_NAME} build starting"
+ROBO_STARTTIME=`date +%s`
+pprint 1 "RoboBSD image ${ROBO_NAME} build starting"
 
 if $do_world ; then
 	if $do_clean ; then
@@ -1073,18 +1087,18 @@ clean_world
 make_conf_install
 install_world
 install_etc
-setup_nanobsd_etc
+setup_robobsd_etc
 install_kernel
 
 run_customize
-setup_nanobsd
+setup_robobsd
 prune_usr
 run_late_customize
 if $do_image ; then
-	create_${NANO_ARCH}_diskimage
+	create_${ROBO_ARCH}_diskimage
 else
 	pprint 2 "Skipping image build (as instructed)"
 fi
 last_orders
 
-pprint 1 "NanoBSD image ${NANO_NAME} completed"
+pprint 1 "RoboBSD image ${ROBO_NAME} completed"
