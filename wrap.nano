@@ -7,7 +7,7 @@ NANO_ARCH=i386
 NANO_NAME=wrap
 NANO_IMGNAME="wrapdisk.img"
 NANO_KERNEL=WRAP1D
-NANO_OBJ=/usr/obj/robobsd.${NANO_NAME}/
+NANO_OBJ=/usr/obj/robobsd/
 
 NANO_CFGDIR=${BASE_DIR}/robobsd/cfg/wrap
 NANO_DATADIR=${BASE_DIR}/robobsd/data

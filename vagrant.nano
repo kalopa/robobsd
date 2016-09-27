@@ -7,7 +7,7 @@ NANO_ARCH=i386
 NANO_NAME=vagrant
 NANO_IMGNAME="vagrantdisk.img"
 NANO_KERNEL=GENERIC
-NANO_OBJ=/usr/obj/robobsd.${NANO_NAME}/
+NANO_OBJ=/usr/obj/robobsd/
 
 NANO_CFGDIR=${BASE_DIR}/robobsd/cfg/vagrant
 NANO_DATADIR=${BASE_DIR}/robobsd/data

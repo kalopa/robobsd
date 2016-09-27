@@ -7,7 +7,7 @@ NANO_ARCH=i386
 NANO_NAME=alix
 NANO_IMGNAME="alixdisk.img"
 NANO_KERNEL=ALIX3D2
-NANO_OBJ=/usr/obj/robobsd.${NANO_NAME}/
+NANO_OBJ=/usr/obj/robobsd/
 
 NANO_CFGDIR=${BASE_DIR}/robobsd/cfg/alix
 NANO_DATADIR=${BASE_DIR}/robobsd/data

@@ -8,6 +8,8 @@ $files = %w{cfg data kernel packages vagrant.nano alix.nano wrap.nano}
 
 $nanobsd = <<SCRIPT
 sudo sh /usr/src/tools/tools/nanobsd/nanobsd.sh -c /home/vagrant/robobsd/vagrant.nano
+sudo sh /usr/src/tools/tools/nanobsd/nanobsd.sh -c /home/vagrant/robobsd/alix.nano -w
+sudo sh /usr/src/tools/tools/nanobsd/nanobsd.sh -c /home/vagrant/robobsd/wrap.nano -w
 SCRIPT
 
 Vagrant.configure(2) do |config|
