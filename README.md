@@ -42,7 +42,13 @@ and create a Vagrant box which will work on Virtualbox.
 
 Failing that, you can download a copy
 [here](http://kalopa.net/pub/robobsd.box).
+To install this, use the following:
 
+	curl -O http://www.kalopa.com/pub/robobsd.box
+	vagrant box add --name robobsd ./robobsd.box
+
+If you have installed an older version of this Vagrant box,
+you will need to use the _--force_ option to replace it.
 This Vagrant box uses the default Vagrant insecure key so make sure you change the key and
 the default password.
 
