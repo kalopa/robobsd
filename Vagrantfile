@@ -4,10 +4,10 @@
 # This is a Vagrant configuration to spin up a standard FreeBSD system,
 # and build a RoboBSD disk image.
 #
-$files = %w{app cfg data kernel packages robobsd.sh common.nano vagrant.nano alix.nano wrap.nano}
+$files = %w{cfg data kernel packages vagrant.nano alix.nano wrap.nano}
 
 $nanobsd = <<SCRIPT
-sudo sh /home/vagrant/robobsd/robobsd.sh -c /home/vagrant/robobsd/vagrant.nano
+sudo sh /usr/src/tools/tools/nanobsd/nanobsd.sh -c /home/vagrant/robobsd/vagrant.nano
 SCRIPT
 
 Vagrant.configure(2) do |config|
@@ -21,9 +21,6 @@ Vagrant.configure(2) do |config|
     vb.customize ["modifyvm", :id, "--memory", "2048"]
     vb.customize ["modifyvm", :id, "--cpus", "4"]
     vb.customize ["modifyvm", :id, "--audio", "none"]
-  #  vb.customize ["modifyvm", :id, "--hwvirtex", "on"]
-  #  vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
-  #  vb.customize ["modifyvm", :id, "--nictype2", "virtio"]
   end
 
   $files.each do |file|
