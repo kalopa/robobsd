@@ -7,8 +7,11 @@ mkdir -p $boxdir
 
 #
 # Create the VMDK file from the NanoBSD image
-vagrant scp :/usr/obj/robobsd.vagrant/vagrantdisk.img $boxdir/
+vagrant scp :/usr/obj/robobsd/vagrantdisk.img $boxdir/
 qemu-img convert -O vmdk $boxdir/vagrantdisk.img $boxdir/box-disk1.vmdk
+
+macaddr=`ruby -e '"080027%06X" % Random.new.rand(0x1000000)'`
+echo $macaddr
 
 #
 # Build the box.ovf file
@@ -261,6 +264,7 @@ Vagrant::Config.run do |config|
   # the MAC address of the box. Custom configuration should be placed in
   # the actual `Vagrantfile` in this box.
   config.vm.base_mac = "080027FAE441"
+  config.vm.guest = :freebsd
 end
 
 # Load include vagrant file if it exists after the auto-generated

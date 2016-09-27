@@ -92,12 +92,15 @@ customize_cmd cust_create_dirs
 
 cust_boot_cfg () (
 	cd ${NANO_WORLDDIR}
+	echo "console=\"comconsole\"" > boot/loader.conf
+	echo "comconsole_speed=\"38400\"" >> boot/loader.conf
 	echo "autoboot_delay=\"2\"" >> boot/loader.conf
 	echo "beastie_disable=\"YES\"" >> boot/loader.conf
 )
 
 cust_create_dirs() (
 	cd ${NANO_WORLDDIR}
-	mkdir -p app/bin app/rc.d home/vagrant
-	echo "/dev/${NANO_DRIVE}s4 /data ufs rw,noauto 2 2" >> etc/fstab
+	mkdir -p app/bin app/rc.d data home
+	ln -s ../data/robobsd home
+	echo "/dev/${NANO_DRIVE}s4 /data ufs rw 2 2" >> etc/fstab
 )
