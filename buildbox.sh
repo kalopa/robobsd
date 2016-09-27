@@ -7,8 +7,8 @@ mkdir -p $boxdir
 
 #
 # Create the VMDK file from the NanoBSD image
-vagrant scp :/usr/obj/nanobsd.robobsd/_.disk.full $boxdir/raw.img
-qemu-img convert -O vmdk $boxdir/raw.img $boxdir/box-disk1.vmdk
+vagrant scp :/usr/obj/robobsd.vagrant/vagrantdisk.img $boxdir/
+qemu-img convert -O vmdk $boxdir/vagrantdisk.img $boxdir/box-disk1.vmdk
 
 #
 # Build the box.ovf file
@@ -271,6 +271,7 @@ EOF
 
 #
 # Finally, tar the bits together to make the Vagrant box
-(cd $boxdir && tar cvzf $HOME/robobsd.box box.ovf Vagrantfile box-disk1.vmdk)
+(cd $boxdir && tar czf $HOME/robobsd.box box.ovf Vagrantfile box-disk1.vmdk)
+vagrant box add --force --name robobsd $HOME/robobsd.box
 rm -rf $boxdir
 exit 0

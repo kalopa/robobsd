@@ -442,13 +442,13 @@ setup_robobsd_etc() (
 	echo "ROBO_DRIVE=${ROBO_DRIVE}" > etc/robobsd.conf
 
 	echo "/dev/${ROBO_DRIVE}s1a / ufs ro 10 1" > etc/fstab
-	if [ $ROBO_APPSIZE -ne 0] ; then
+	if [ $ROBO_APPSIZE -ne 0 ] ; then
 		echo "/dev/${ROBO_DRIVE}s2 /app ufs ro 10 1" > etc/fstab
 		mkdir -p app
 	fi
 	echo "/dev/${ROBO_DRIVE}s3 /cfg ufs rw,noauto 2 2" >> etc/fstab
 	mkdir -p cfg
-	if [ $ROBO_DATASIZE -ne 0] ; then
+	if [ $ROBO_DATASIZE -ne 0 ] ; then
 		echo "/dev/${ROBO_DRIVE}s4 /data ufs rw 2 3" > etc/fstab
 		mkdir -p data
 	fi
@@ -517,7 +517,7 @@ create_i386_diskimage() (
 	(
 	echo $ROBO_MEDIASIZE \
 		$ROBO_SECTS $ROBO_HEADS \
-		$ROBO_CODESIZE $ROBO_CONFSIZE $ROBO_APPSIZE $ROBO_DATASIZE |
+		$ROBO_CODESIZE $ROBO_APPSIZE $ROBO_CONFSIZE $ROBO_DATASIZE |
 	awk '
 	{
 		printf "# %s\n", $0
@@ -534,29 +534,22 @@ create_i386_diskimage() (
 		else
 			print "g c" 1023 " h" $3 " s" $2
 
-		if ($6 > 0) {
+		if ($5 > 0) {
 			# size of app partition in full cylinders
-			asl = int (($6 + cs - 1) / cs)
+			asl = int (($5 + cs - 1) / cs)
 		} else {
 			asl = 0;
 		}
 
 		if ($7 > 0) { 
-			# size of app partition in full cylinders
-			asl = int (($7 + cs - 1) / cs)
-		} else {
-			asl = 0;
-		}
-
-		if ($8 > 0) { 
 			# size of data partition in full cylinders
-			dsl = int (($8 + cs - 1) / cs)
+			dsl = int (($7 + cs - 1) / cs)
 		} else {
 			dsl = 0;
 		}
 
 		# size of config partition in full cylinders
-		csl = int (($5 + cs - 1) / cs)
+		csl = int (($6 + cs - 1) / cs)
 
 		if ($4 == 0) {
 			# size of image partition(s) in full cylinders
@@ -570,7 +563,7 @@ create_i386_diskimage() (
 		c = isl * cs;
 
 		# App partition (if any) starts at cylinder boundary.
-		if ($6 > 0) {
+		if ($5 > 0) {
 			print "p 2 165 " c, asl * cs
 			c += asl * cs
 		}
@@ -580,9 +573,9 @@ create_i386_diskimage() (
 		c += csl * cs
 
 		# Data partition (if any) starts at cylinder boundary.
-		if ($8 > 0) {
+		if ($7 > 0) {
 			print "p 4 165 " c, dsl * cs
-		} else if ($8 < 0 && $1 > c) {
+		} else if ($7 < 0 && $1 > c) {
 			print "p 4 165 " c, $1 - c
 		} else if ($1 < c) {
 			print "Disk space overcommitted by", \
@@ -629,7 +622,7 @@ create_i386_diskimage() (
 	( cd ${MNT} && du -k ) > ${ROBO_OBJ}/_.du
 	robo_umount ${MNT}
 
-	if [ $ROBO_APPSIZE -ne 0] ; then
+	if [ $ROBO_APPSIZE -ne 0 ] ; then
 		populate_app_slice /dev/${MD}s2 "${ROBO_APPDIR}" ${MNT} "s2"
 	fi
 
@@ -742,9 +735,6 @@ UsbDevice() {
 # Setup serial console
 
 cust_comconsole() (
-	# Enable getty on console
-	sed -i "" -e /tty[du]0/s/off/on/ ${ROBO_WORLDDIR}/etc/ttys
-
 	# Disable getty on syscons devices
 	sed -i "" -e '/^ttyv[0-8]/s/	on/	off/' ${ROBO_WORLDDIR}/etc/ttys
 
