@@ -9,6 +9,7 @@ $files = %w{cfg data kernel packages vagrant.nano alix.nano wrap.nano}
 $nanobsd = <<SCRIPT
 sudo chown -R root:wheel /home/vagrant/robobsd/cfg /home/vagrant/robobsd/data
 sudo chown -R 1000:1000 /home/vagrant/robobsd/data/robobsd
+sudo chmod 755 /home/vagrant/robobsd
 sudo chmod -R go-rwx /home/vagrant/robobsd/data/robobsd/.ssh
 sudo sh /usr/src/tools/tools/nanobsd/nanobsd.sh -c /home/vagrant/robobsd/vagrant.nano
 sudo sh /usr/src/tools/tools/nanobsd/nanobsd.sh -c /home/vagrant/robobsd/alix.nano -w
