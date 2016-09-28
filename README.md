@@ -41,16 +41,22 @@ You can also use _buildbox.sh_ to copy the vagrant disk image from the VM file s
 and create a Vagrant box which will work on Virtualbox.
 
 Failing that, you can download a copy
-[here](http://kalopa.net/pub/robobsd.box).
+[here](http://dload.kalopa.com/robobsd/robobsd.box.gz).
 To install this, use the following:
 
-	curl -O http://www.kalopa.com/pub/robobsd.box
+	curl -O http://dload.kalopa.com/robobsd/robobsd.box.gz
+	gunzip robobsd.box
 	vagrant box add --name robobsd ./robobsd.box
 
 If you have installed an older version of this Vagrant box,
 you will need to use the _--force_ option to replace it.
 This Vagrant box uses the default Vagrant insecure key so make sure you change the key and
 the default password.
+
+If you are looking for raw Compact Flash images for PC Engines boards, try here:
+
+	curl -O http://dload.kalopa.com/robobsd/robobsd.alix.img.gz
+	curl -O http://dload.kalopa.com/robobsd/robobsd.wrap.img.gz
 
 As created, there is a user account _robobsd_ with password _vagrant_ on the image.
 
@@ -99,4 +105,5 @@ I use the following command to monitor what's happening as the machine boots.
 If you're using the board to interface to a low-level system, you can simulate that
 system using the Unix-domain sockets.
 
+	pkg-1.5.5
 Feel free to get in touch if you run into any issues.
