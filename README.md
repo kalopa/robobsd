@@ -80,7 +80,7 @@ following into a file called _Vagrantfile_ in there.
 	# -*- mode: ruby -*-
 	# vi: set ft=ruby :
 
-	Vagrant.configure("2") do |config|
+	Vagrant.configure(2) do |config|
 	  config.vm.box = "robobsd"
 	  config.vm.hostname = "robobsd"
 	  config.vm.guest = :freebsd
@@ -105,5 +105,18 @@ I use the following command to monitor what's happening as the machine boots.
 If you're using the board to interface to a low-level system, you can simulate that
 system using the Unix-domain sockets.
 
-	pkg-1.5.5
-Feel free to get in touch if you run into any issues.
+Here's some Ruby code to read from COM1:
+
+	#!/usr/bin/env ruby
+	#
+	require 'socket'
+
+	socket = UNIXSocket.new("/tmp/robo_com1")
+
+	while(line = socket.gets) do
+	  puts line
+	end
+
+Feel free to
+[create an issue](https://github.com/kalopa/robobsd/issues/new)
+if/when you discover a problem.
