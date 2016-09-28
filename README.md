@@ -27,13 +27,14 @@ a different virtualization platform.
 Once the Vagrant VM has produced the three images,
 you can copy them to your home directory using the following commands:
 
-	vagrant scp :/usr/obj/robobsd/vagrantdisk.img .
-	vagrant scp :/usr/obj/robobsd/alixdisk.img .
-	vagrant scp :/usr/obj/robobsd/wrapdisk.img .
+	vagrant scp :robobsd.vagrant.img.gz .
+	vagrant scp :robobsd.alix.img.gz .
+	vagrant scp :robobsd.wrap.img.gz .
 
 These images are uncompressed and can be copied to a Compact Flash as follows:
 
-	dd if=alixdisk.img bs=10m of=/dev/da1
+	gunzip robobsd.alix.img
+	dd if=robobsd.alix.img bs=10m of=/dev/da1
 
 (note I used */dev/da1* in this example - make sure you specify the right device here).
 
@@ -68,6 +69,8 @@ In addition, the following packages have been pre-installed:
 	libffi-3.2.1
 	libyaml-0.1.6_2
 	pkg-1.5.5
+	python3-3_3
+	python34-3.4.3_1
 	redis-3.0.2
 	rsync-3.1.1_3
 	ruby-2.1.6,1

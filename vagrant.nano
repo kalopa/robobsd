@@ -5,7 +5,8 @@ NANO_SRC=/usr/src
 NANO_ARCH=i386
 
 NANO_NAME=vagrant
-NANO_IMGNAME="vagrantdisk.img"
+NANO_DISKIMGDIR=$BASE_DIR
+NANO_IMGNAME="robobsd.vagrant.img"
 NANO_KERNEL=GENERIC
 NANO_OBJ=/usr/obj/robobsd/
 
@@ -103,4 +104,9 @@ cust_create_dirs() (
 	mkdir -p app/bin app/rc.d data home
 	ln -s ../data/robobsd home
 	echo "/dev/${NANO_DRIVE}s4 /data ufs rw 2 2" >> etc/fstab
+)
+
+last_orders () (
+	rm -f ${NANO_DISKIMGDIR}/${NANO_IMGNAME}.gz
+	gzip ${NANO_DISKIMGDIR}/${NANO_IMGNAME}
 )

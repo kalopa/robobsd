@@ -7,8 +7,9 @@ mkdir -p $boxdir
 
 #
 # Create the VMDK file from the NanoBSD image
-vagrant scp :/usr/obj/robobsd/vagrantdisk.img $boxdir/
-qemu-img convert -O vmdk $boxdir/vagrantdisk.img $boxdir/box-disk1.vmdk
+vagrant scp :robobsd.vagrant.img.gz $boxdir/
+(cd $boxdir && gunzip robobsd.vagrant.img)
+qemu-img convert -O vmdk $boxdir/robobsd.vagrant.img $boxdir/box-disk1.vmdk
 
 macaddr=`ruby -e '"080027%06X" % Random.new.rand(0x1000000)'`
 echo $macaddr
