@@ -64,6 +64,7 @@ As created, there is a user account _robobsd_ with password _vagrant_ on the ima
 In addition, the following packages have been pre-installed:
 
 	gettext-runtime-0.19.4
+	gmp-5.1.3_2
 	indexinfo-0.2.3
 	libedit-3.1.20150325_1
 	libffi-3.2.1
