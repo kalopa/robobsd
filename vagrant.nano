@@ -1,4 +1,4 @@
-BASE_DIR=/home/vagrant
+BASE_DIR=/home/dtynan
 
 NANO_SRC=/usr/src
 
@@ -96,6 +96,8 @@ cust_boot_cfg () (
 	echo "comconsole_speed=\"38400\"" >> boot/loader.conf
 	echo "autoboot_delay=\"2\"" >> boot/loader.conf
 	echo "beastie_disable=\"YES\"" >> boot/loader.conf
+	echo "virtio_load=\"2\"" >> boot/loader.conf
+	echo "virtio_pci_load=\"YES\"" >> boot/loader.conf
 )
 
 cust_create_dirs() (

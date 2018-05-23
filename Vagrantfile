@@ -4,6 +4,17 @@
 # This is a Vagrant configuration to spin up a standard FreeBSD system,
 # and build a RoboBSD disk image.
 #
+# NB: I have run into virtualbox extension issues with the latest
+# FreeBSD vagrant boxen. I know it works (more or less) with
+# VirtualBox version 5.1.22, but beyond that, you're on your own.
+# It should also work with libvirt (with some modifications) but I
+# need to run the build env on Linux and Mac OS X, so I use VB.
+#
+# The build system will produce three images, as follows:
+#    1. RoboBSD for Vagrant
+#    2. RoboBSD for a PC Engines ALIX board
+#    3. RoboBSD for a PC Engines WRAP board
+#
 $files = %w{cfg data kernel packages vagrant.nano alix.nano wrap.nano}
 
 $nanobsd = <<SCRIPT
@@ -18,8 +29,11 @@ SCRIPT
 
 Vagrant.configure(2) do |config|
   config.vm.hostname = "robodev"
-  config.vm.box = "FreeBSD10_1"
+  config.vm.box = "freebsd/FreeBSD-11.1-RELEASE"
+  config.vm.box_version = "2017.07.21"
+  config.vm.base_mac = "080027D14C66"
   config.vm.guest = :freebsd
+  config.vm.network "forwarded_port", guest: 22, host: 8022
   config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
   config.ssh.shell = "sh"
 

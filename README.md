@@ -11,7 +11,8 @@ which works (I built my own), you can simply run
 
     vagrant up
 
-and it will bring up the freebsd10\_1 Vagrant box, and run the RoboBSD build script.
+and it will bring up the freebsd11\_1-RELEASE Vagrant box, and run the
+RoboBSD build script.
 
 In this instance it will create three images, one for Vagrant debugging work,
 a disk image for the

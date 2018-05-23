@@ -1,6 +1,5 @@
 #!/bin/sh
 #
-#
 # Do the setup for building a RoboBSD Vagrant box
 boxdir=/tmp/box.$$
 mkdir -p $boxdir
