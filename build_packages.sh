@@ -31,12 +31,14 @@ PACKAGES="\
 	databases/redis \
 "
 
-rm -f packages/*
+rm -rf log/ packages/
+mkdir -p log packages
+
 for package in $PACKAGES
 do
     echo ">>>> $package"
     mkdir -p log/$package
-    make -C /usr/ports/$package -DBATCH package > log/$package/build.log
+    make -C /usr/ports/$package -DBATCH package > log/$package/build.log 2>&1
     cp /usr/ports/$package/work/pkg/${basic}*.txz packages/
 done
 exit 0
