@@ -24,64 +24,76 @@ NANO_MEDIASIZE=7806960
 NANO_HEADS=16
 NANO_SECTS=63
 
-NANO_IMAGES=2
-NANO_INIT_IMG2=0
+NANO_IMAGES=1
 
-NANO_CODESIZE=1260000
+NANO_CODESIZE=2097152
 NANO_CONFSIZE=2048
 NANO_DATASIZE=-1
 
-NANO_PACKAGE_DIR=${BASE_DIR}/robobsd/packages/
-NANO_PACKAGE_LIST="*"
+NANO_PACKAGE_DIR=${BASE_DIR}/robobsd/packages/All
+NANO_PACKAGE_LIST="
+	pkg-1.10.5.txz \
+	indexinfo-0.3.1.txz \
+	libiconv-1.14_11.txz \
+	libedit-3.1.20170329_2,1.txz \
+	libyaml-0.1.6_2.txz \
+	gettext-runtime-0.19.8.1_1.txz \
+	gettext-tools-0.19.8.1.txz \
+	gmake-4.2.1_2.txz \
+	rsync-3.1.3.txz \
+	sudo-1.8.22.txz \
+	perl5-5.26.2.txz \
+	p5-Locale-gettext-1.07.txz \
+	help2man-1.47.6.txz \
+	texinfo-6.5,1.txz \
+	m4-1.4.18,1.txz \
+	autoconf-wrapper-20131203.txz \
+	autoconf-2.69_1.txz \
+	automake-wrapper-20131203.txz \
+	automake-1.15.1.txz \
+	tcl86-8.6.8.txz \
+	expect-5.45.4,1.txz \
+	dejagnu-1.6.1.txz \
+	libffi-3.2.1_2.txz \
+	libunwind-20170615.txz \
+	ruby-2.4.4,1.txz \
+	ruby24-gems-2.7.6.txz \
+	redis-3.2.11.txz \
+	rubygem-bundler-1.16.1.txz \
+"
 
 #
-CONF_BUILD="
-WITHOUT_ACPI=true
-WITHOUT_ATM=true
-WITHOUT_AUDIT=true
-WITHOUT_BIND_DNSSEC=true
-WITHOUT_BIND_ETC=true
-WITHOUT_BIND_LIBS_LWRES=true
-WITHOUT_BLUETOOTH=true
-WITHOUT_CALENDAR=true
-WITHOUT_CDDL=true
-WITHOUT_CVS=true
-WITHOUT_DICT=true
-WITHOUT_EXAMPLES=true
-WITHOUT_FORTRAN=true
-WITHOUT_GAMES=true
-WITHOUT_GCOV=true
-WITHOUT_GPIB=true
-WITHOUT_HTML=true
-WITHOUT_I4B=true
-WITHOUT_INET6=true
-WITHOUT_INFO=true
-WITHOUT_IPFILTER=true
-WITHOUT_IPX=true
-WITHOUT_KERBEROS=true
-WITHOUT_LIBKSE=true
-WITHOUT_LOCALES=true
-WITHOUT_LPR=true
-WITHOUT_MAN=true
-WITHOUT_NETCAT=true
-WITHOUT_NIS=true
-WITHOUT_NLS=true
-WITHOUT_NS_CACHING=true
-WITHOUT_OBJC=true
-WITHOUT_PROFILE=true
-WITHOUT_RCMDS=true
-WITHOUT_RCS=true
-WITHOUT_RESCUE=true
-WITHOUT_SENDMAIL=true
-WITHOUT_SHAREDOCS=true
-WITHOUT_SSP=true
-WITHOUT_SYSCONS=true
-"
-CONF_INSTALL="$CONF_BUILD
-WITHOUT_TOOLCHAIN=true
-WITHOUT_INSTALLLIB=true
-INSTALL_NODEBUG=true
-"
+CONF_BUILD='
+WITHOUT_KLDLOAD=YES
+WITHOUT_PAM=YES
+'
+
+CONF_INSTALL='
+WITHOUT_ACPI=YES
+WITHOUT_BLUETOOTH=YES
+WITHOUT_FORTRAN=YES
+WITHOUT_HTML=YES
+WITHOUT_LPR=YES
+WITHOUT_MAN=YES
+WITHOUT_SENDMAIL=YES
+WITHOUT_SHAREDOCS=YES
+WITHOUT_EXAMPLES=YES
+WITHOUT_INSTALLLIB=YES
+WITHOUT_CALENDAR=YES
+WITHOUT_MISC=YES
+WITHOUT_SHARE=YES
+'
+
+CONF_WORLD='
+WITHOUT_BIND=YES
+WITHOUT_MODULES=YES
+WITHOUT_KERBEROS=YES
+WITHOUT_GAMES=YES
+WITHOUT_RESCUE=YES
+WITHOUT_LOCALES=YES
+WITHOUT_SYSCONS=YES
+WITHOUT_INFO=YES
+'
 
 customize_cmd cust_comconsole
 customize_cmd cust_boot_cfg
@@ -92,7 +104,7 @@ customize_cmd cust_create_dirs
 
 cust_boot_cfg () (
 	cd ${NANO_WORLDDIR}
-	echo "console=\"comconsole\"" > boot/loader.conf
+	echo "console=\"comconsole\"" >> boot/loader.conf
 	echo "comconsole_speed=\"38400\"" >> boot/loader.conf
 	echo "autoboot_delay=\"2\"" >> boot/loader.conf
 	echo "beastie_disable=\"YES\"" >> boot/loader.conf
@@ -102,9 +114,8 @@ cust_boot_cfg () (
 
 cust_create_dirs() (
 	cd ${NANO_WORLDDIR}
-	mkdir -p app/bin app/rc.d data home
-	ln -s ../data/robobsd home
-	echo "/dev/${NANO_DRIVE}s4 /data ufs rw 2 2" >> etc/fstab
+	ln -s app home
+	echo "/dev/${NANO_DRIVE}s4 /app ufs rw 2 2" >> etc/fstab
 )
 
 last_orders () (

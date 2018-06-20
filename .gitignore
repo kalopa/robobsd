@@ -1,5 +1,5 @@
 .vagrant
-packages/*.txz
+packages/All
 *.sublime-project
 *.sublime-workspace
 log
