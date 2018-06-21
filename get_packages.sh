@@ -33,7 +33,6 @@ PACKAGES="\
 	rsync-3.1.3 \
 	ruby-2.4.4,1 \
 	ruby24-gems-2.7.6 \
-	rubygem-bundler-1.16.1 \
 	sudo-1.8.22 \
 	tcl86-8.6.8 \
 	texinfo-6.5,1 \
