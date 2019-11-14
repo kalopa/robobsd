@@ -3,39 +3,38 @@
 set -e
 
 PACKAGES="\
-	autoconf-2.69_1 \
+	autoconf-2.69_3 \
 	autoconf-wrapper-20131203 \
-	automake-1.15.1 \
-	automake-wrapper-20131203 \
-	binutils-2.30_2,1 \
-	dejagnu-1.6.1 \
-	expect-5.45.4,1 \
+	automake-1.16.1_2 \
+	binutils-2.32_1,1 \
+	dejagnu-1.6.2 \
+	expect-5.45.4_1,1 \
 	gcc-ecj-4.5 \
-	gcc6-6.4.0_4 \
-	gettext-runtime-0.19.8.1_1 \
-	gettext-tools-0.19.8.1 \
-	gmake-4.2.1_2 \
-	gmp-6.1.2 \
-	help2man-1.47.6 \
+	gcc9-9.2.0 \
+	gettext-runtime-0.20.1 \
+	gettext-tools-0.20.1_1 \
+	gmake-4.2.1_3 \
+	gmp-6.1.2_1 \
+	help2man-1.47.11 \
 	indexinfo-0.3.1 \
-	libedit-3.1.20170329_2,1 \
-	libffi-3.2.1_2 \
+	libedit-3.1.20190324,1 \
+	libffi-3.2.1_3 \
 	libiconv-1.14_11 \
 	libunwind-20170615 \
-	libyaml-0.1.6_2 \
-	m4-1.4.18,1 \
-	mpc-1.1.0 \
-	mpfr-3.1.6 \
+	libyaml-0.2.2 \
+	m4-1.4.18_1,1 \
+	mpc-1.1.0_2 \
+	mpfr-4.0.2 \
 	p5-Locale-gettext-1.07 \
-	perl5-5.26.2 \
-	pkg-1.10.5 \
-	redis-3.2.11 \
-	rsync-3.1.3 \
-	ruby-2.4.4,1 \
-	ruby24-gems-2.7.6 \
-	sudo-1.8.22 \
-	tcl86-8.6.8 \
-	texinfo-6.5,1 \
+	perl5-5.30.0 \
+	pkg-1.12.0 \
+	redis-4.0.14_1 \
+	rsync-3.1.3_1 \
+	ruby-2.6.5,1 \
+	ruby26-gems-3.0.6 \
+	sudo-1.8.28 \
+	tcl86-8.6.9_1 \
+	texinfo-6.6_4,1 \
 "
 
 rm -rf log/ packages/
