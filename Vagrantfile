@@ -29,7 +29,7 @@ SCRIPT
 
 Vagrant.configure(2) do |config|
   config.vm.hostname = "robodev"
-  config.vm.box = "freebsd/FreeBSD-11.1-RELEASE"
+  config.vm.box = "freebsd/FreeBSD-12.1-RELEASE"
   config.vm.box_version = "2017.07.21"
   config.vm.base_mac = "080027D14C66"
   config.vm.guest = :freebsd
