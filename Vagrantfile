@@ -15,22 +15,11 @@
 #    2. RoboBSD for a PC Engines ALIX board
 #    3. RoboBSD for a PC Engines WRAP board
 #
-$files = %w{cfg data kernel packages vagrant.nano alix.nano wrap.nano}
-
-$nanobsd = <<SCRIPT
-sudo chown -R root:wheel /home/vagrant/robobsd/cfg /home/vagrant/robobsd/data
-sudo chown -R 1000:1000 /home/vagrant/robobsd/data/robobsd
-sudo chmod 755 /home/vagrant/robobsd/data/robobsd
-sudo chmod -R go-rwx /home/vagrant/robobsd/data/robobsd/.ssh
-sudo sh /usr/src/tools/tools/nanobsd/nanobsd.sh -c /home/vagrant/robobsd/vagrant.nano
-sudo sh /usr/src/tools/tools/nanobsd/nanobsd.sh -c /home/vagrant/robobsd/alix.nano -w
-sudo sh /usr/src/tools/tools/nanobsd/nanobsd.sh -c /home/vagrant/robobsd/wrap.nano -w
-SCRIPT
-
 Vagrant.configure(2) do |config|
   config.vm.hostname = "robodev"
   config.vm.box = "freebsd/FreeBSD-12.1-RELEASE"
-  config.vm.box_version = "2017.07.21"
+  config.vm.box_version = "2019.11.01"
+  config.disksize.size = '30GB'
   config.vm.base_mac = "080027D14C66"
   config.vm.guest = :freebsd
   config.vm.network "forwarded_port", guest: 22, host: 8022
@@ -42,9 +31,4 @@ Vagrant.configure(2) do |config|
     vb.customize ["modifyvm", :id, "--cpus", "4"]
     vb.customize ["modifyvm", :id, "--audio", "none"]
   end
-
-  $files.each do |file|
-    config.vm.provision "file", source: file, destination: "robobsd/#{file}"
-  end
-  config.vm.provision "bootstrap", type: "shell", inline: $nanobsd
 end

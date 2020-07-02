@@ -1,5 +1,4 @@
 .vagrant
-packages/All
+log
 *.sublime-project
 *.sublime-workspace
-log
