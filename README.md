@@ -51,9 +51,9 @@ with the FreeBSD source tools) to build three, fresh install images.
 Once the Vagrant VM has produced the three images,
 you can copy them to your home directory using the following commands:
 
-    $ vagrant scp :robobsd/images/robobsd.vagrant.img.gz .
-    $ vagrant scp :robobsd/images/robobsd.alix.img.gz .
-    $ vagrant scp :robobsd/images/robobsd.wrap.img.gz .
+    $ vagrant scp :images/robobsd.vagrant.img.gz .
+    $ vagrant scp :images/robobsd.alix.img.gz .
+    $ vagrant scp :images/robobsd.wrap.img.gz .
 
 These images are compressed and can be copied to a Compact Flash as follows:
 
