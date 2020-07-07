@@ -41,8 +41,7 @@ the actual build work.
 The *build_images.sh* script, running locally on the FreeBSD VM,
 will pull the */usr/src* tree from the FreeBSD SVN repository
 (with the tag *releng/12.1*).
-It will then run the *get_packages.sh* script to pull the various
-packages necessary for the image.
+It will then pull all of the required packages, ready for installation.
 Once that is complete, it will run the *nanobsd.sh* tool (provided
 with the FreeBSD source tools) to build three, fresh install images.
 
@@ -90,29 +89,31 @@ As created, there is a user account _robobsd_ with password _vagrant_ on the ima
 
 The following packages have been pre-installed:
 
-* pkg: 1.13.2\_1
-* libedit: 3.1.20191211,1
-* libffi: 3.2.1\_3
-* libunwind: 20170615
-* libyaml: 0.2.2
 * autoconf: 2.69\_3
-* autoconf: wrapper-20131203
+* autoconf-wrapper: 20131203
 * automake: 1.16.1\_2
 * binutils: 2.33.1\_2,1
 * dejagnu: 1.6.2
 * expect: 5.45.4\_2,1
-* gmp: 6.2.0
-* gcc-ecj: 4.5
-* gcc9: 9.3.0
 * gettext-runtime: 0.20.1
-* libtextstyle: 0.20.1
 * gettext-tools: 0.20.1\_1
 * gmake: 4.2.1\_3
-* sudo: 1.8.31p1
+* indexinfo: 0.3.1
+* libedit: 3.1.20191211,1
+* libffi: 3.2.1\_3
+* libiconv: 1.14\_11
+* libtextstyle: 0.20.1
+* libunwind: 20170615
+* libyaml: 0.2.2
+* m4: 1.4.18\_1,1
+* perl5: 5.30.3
+* pkg: 1.13.2\_1
 * rsync: 3.1.3\_1
 * ruby: 2.6.5,1
 * ruby26-gems: 3.0.6
 * rubygem-rake: 12.3.3
+* sudo: 1.8.31p1
+* tcl86: 8.6.10
 
 ## Running RoboBSD on Vagrant
 
