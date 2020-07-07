@@ -32,6 +32,9 @@ export NANO_PACKAGE_LIST="\
 	ruby-2.6.5,1 \
 	ruby26-gems-3.0.6 \
 	rubygem-rake-12.3.3 \
+	readline-8.0.4 \
+	python37-3.7.7_1 \
+	python3-3_3 \
 	"
 
 cd /home/vagrant/robobsd

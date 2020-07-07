@@ -108,6 +108,9 @@ The following packages have been pre-installed:
 * m4: 1.4.18\_1,1
 * perl5: 5.30.3
 * pkg: 1.13.2\_1
+* python3: 3\_3
+* python37: 3.7.7\_1
+* readline: 8.0.4
 * rsync: 3.1.3\_1
 * ruby: 2.6.5,1
 * ruby26-gems: 3.0.6
