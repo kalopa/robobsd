@@ -19,7 +19,7 @@ Vagrant.configure(2) do |config|
   config.vm.hostname = "robodev"
   config.vm.box = "freebsd/FreeBSD-12.1-RELEASE"
   config.vm.box_version = "2019.11.01"
-  config.disksize.size = '30GB'
+  config.disksize.size = '60GB'
   config.vm.base_mac = "080027D14C66"
   config.vm.guest = :freebsd
   config.vm.network "forwarded_port", guest: 22, host: 8022

@@ -25,21 +25,8 @@ PACKAGES="\
 	rsync-3.1.3_1 \
 	ruby-2.6.5,1 \
 	ruby26-gems-3.0.6 \
-	tcl86-8.6.10 \
-	texinfo-6.7_2,1 \
-	help2man-1.47.13 \
-	indexinfo-0.3.1 \
-	libiconv-1.14_11 \
-	m4-1.4.18_1,1 \
-	mpc-1.1.0_2 \
-	mpfr-4.0.2 \
-	perl5-5.30.3 \
-	p5-Locale-gettext-1.07 \
-	p5-Locale-libintl-1.31 \
-	p5-Text-Unidecode-1.30 \
-	p5-Unicode-EastAsianWidth-12.0 \
-	redis-5.0.8
-"
+	rubygem-rake-12.3.3 \
+	"
 
 export ABI=FreeBSD:12:i386
 

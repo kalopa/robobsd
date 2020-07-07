@@ -1,4 +1,5 @@
 .vagrant
+images/*.gz
 log
 *.sublime-project
 *.sublime-workspace

@@ -1,13 +1,14 @@
 #!/bin/sh
 #
 # Do the setup for building a RoboBSD Vagrant box
+echo $0
+imagedir=$(realpath $0)
 boxdir=/tmp/box.$$
 mkdir -p $boxdir
 
 #
 # Create the VMDK file from the NanoBSD image
-vagrant scp :robobsd.vagrant.img.gz $boxdir/
-(cd $boxdir && gunzip robobsd.vagrant.img)
+gunzip < $imagedir/robobsd.vagrant.img.gz > $boxdir/robobsd.vagrant.img
 qemu-img convert -O vmdk $boxdir/robobsd.vagrant.img $boxdir/box-disk1.vmdk
 
 macaddr=`ruby -e '"080027%06X" % Random.new.rand(0x1000000)'`
@@ -275,7 +276,8 @@ EOF
 
 #
 # Finally, tar the bits together to make the Vagrant box
-(cd $boxdir && tar czf $HOME/robobsd.box box.ovf Vagrantfile box-disk1.vmdk)
-vagrant box add --force --name robobsd $HOME/robobsd.box
+(cd $boxdir && tar czf $imagedir/robobsd.box box.ovf Vagrantfile box-disk1.vmdk)
+vagrant box add --force --name robobsd $imagedir/robobsd.box
+gzip $imagedir/robobsd.box
 rm -rf $boxdir
 exit 0
