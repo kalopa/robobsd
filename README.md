@@ -7,6 +7,60 @@ which is documented in the
 [NanoBSD Howto](https://www.freebsd.org/doc/en/articles/nanobsd/howto.html)
 from the FreeBSD Manual.
 
+## Downloading pre-built images
+
+If you don't want to go through the hassle of building images for the ALIX,
+WRAP and Vagrant systems, the following are available for download:
+
+* [Vagrant Box](http://dl.kalopa.com/robobsd/robobsd.box.gz)
+* [ALIX](http://dl.kalopa.com/robobsd/robobsd.alix.img.gz)
+* [WRAP](http://dl.kalopa.com/robobsd/robobsd.wrap.img.gz)
+
+## Running RoboBSD on Vagrant
+
+To use the *robobsd* Vagrant box, create a separate directory and copy the
+following into a file called _Vagrantfile_ in there.
+
+    # -*- mode: ruby -*-
+    # vi: set ft=ruby :
+
+    Vagrant.configure(2) do |config|
+      config.vm.box = "robobsd"
+      config.vm.hostname = "robobsd"
+      config.vm.guest = :freebsd
+      config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
+      config.ssh.shell = "sh"
+      config.ssh.username = "robobsd"
+
+      config.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--uart1", "0x3f8", "4"]
+        vb.customize ["modifyvm", :id, "--uartmode1", "server", "/tmp/robo_com1"]
+        vb.customize ["modifyvm", :id, "--uart2", "0x2f8", "3"]
+        vb.customize ["modifyvm", :id, "--uartmode2", "server", "/tmp/robo_com2"]
+      end
+    end
+
+Two serial ports are created, for COM1 and COM2, as *RoboBSD* doesn't output anything to
+the video console (the PC Engines boards don't have any VGA circuitry).
+I use the following command to monitor what's happening as the machine boots.
+
+    $ socat - UNIX-CONNECT:/tmp/robo_com1 
+
+If you're using the board to interface to a low-level system, you can simulate that
+system using the Unix-domain sockets.
+
+Here's some Ruby code to read from COM1:
+
+    #!/usr/bin/env ruby
+    #
+    require 'socket'
+
+    socket = UNIXSocket.new("/tmp/robo_com1")
+
+    while(line = socket.gets) do
+      puts line
+    end
+
 ## Building the images using Vagrant
 
 Assuming you have [Vagrant](https://www.vagrantup.com/)
@@ -117,51 +171,6 @@ The following packages have been pre-installed:
 * rubygem-rake: 12.3.3
 * sudo: 1.8.31p1
 * tcl86: 8.6.10
-
-## Running RoboBSD on Vagrant
-
-To use the newly-created robobsd Vagrant box, create a separate directory and copy the
-following into a file called _Vagrantfile_ in there.
-
-    # -*- mode: ruby -*-
-    # vi: set ft=ruby :
-
-    Vagrant.configure(2) do |config|
-      config.vm.box = "robobsd"
-      config.vm.hostname = "robobsd"
-      config.vm.guest = :freebsd
-      config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
-      config.ssh.shell = "sh"
-      config.ssh.username = "robobsd"
-
-      config.vm.provider :virtualbox do |vb|
-        vb.customize ["modifyvm", :id, "--uart1", "0x3f8", "4"]
-        vb.customize ["modifyvm", :id, "--uartmode1", "server", "/tmp/robo_com1"]
-        vb.customize ["modifyvm", :id, "--uart2", "0x2f8", "3"]
-        vb.customize ["modifyvm", :id, "--uartmode2", "server", "/tmp/robo_com2"]
-      end
-    end
-
-Two serial ports are created, for COM1 and COM2, as *RoboBSD* doesn't output anything to
-the video console (the PC Engines boards don't have any VGA circuitry).
-I use the following command to monitor what's happening as the machine boots.
-
-    $ socat - UNIX-CONNECT:/tmp/robo_com1 
-
-If you're using the board to interface to a low-level system, you can simulate that
-system using the Unix-domain sockets.
-
-Here's some Ruby code to read from COM1:
-
-    #!/usr/bin/env ruby
-    #
-    require 'socket'
-
-    socket = UNIXSocket.new("/tmp/robo_com1")
-
-    while(line = socket.gets) do
-      puts line
-    end
 
 ## Issues / Contributions
 
