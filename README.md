@@ -12,9 +12,9 @@ from the FreeBSD Manual.
 If you don't want to go through the hassle of building images for the ALIX,
 WRAP and Vagrant systems, the following are available for download:
 
-* [Vagrant Box](http://dl.kalopa.com/robobsd/robobsd.box.gz)
-* [ALIX](http://dl.kalopa.com/robobsd/robobsd.alix.img.gz)
-* [WRAP](http://dl.kalopa.com/robobsd/robobsd.wrap.img.gz)
+* [Vagrant Box](https://kalopa.com/download/robobsd/robobsd.box.gz)
+* [ALIX](https://kalopa.com/download/robobsd/robobsd.alix.img.gz)
+* [WRAP](https://kalopa.com/download/robobsd/robobsd.wrap.img.gz)
 
 ## Running RoboBSD on Vagrant
 
@@ -120,10 +120,10 @@ You can also use *build_vbox.sh* to copy the vagrant disk image from the VM file
 and create a Vagrant box which will work on Virtualbox.
 
 Failing that, you can download a copy
-[here](http://dload.kalopa.com/robobsd/robobsd.box.gz).
+[here](https://kalopa.com/download/robobsd/robobsd.box.gz).
 To install this, use the following:
 
-    $ curl -O http://dload.kalopa.com/robobsd/robobsd.box.gz
+    $ curl -O https://kalopa.com/download/robobsd/robobsd.box.gz
     $ gunzip robobsd.box
     $ vagrant box add --name robobsd ./robobsd.box
 
@@ -134,10 +134,19 @@ the default password.
 
 If you are looking for raw Compact Flash images for PC Engines boards, try here:
 
-    $ curl -O http://dload.kalopa.com/robobsd/robobsd.alix.img.gz
-    $ curl -O http://dload.kalopa.com/robobsd/robobsd.wrap.img.gz
+    $ curl -O https://kalopa.com/download/robobsd/robobsd.alix.img.gz
+    $ curl -O https://kalopa.com/download/robobsd/robobsd.wrap.img.gz
 
 As created, there is a user account _robobsd_ with password _vagrant_ on the image.
+
+# Virtual Machine
+
+If Vagrant isn't your cup of tea, try the following QEMU command:
+
+    $ qemu-system-i386 -nographic -drive file=robobsd.alix.img,format=raw
+
+(Remember to uncompress the image file, beforehand).
+To exit out of QEMU emulation, type **^Ax**.
 
 ## Installed packages
 
