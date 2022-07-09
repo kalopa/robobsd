@@ -12,9 +12,9 @@ from the FreeBSD Manual.
 If you don't want to go through the hassle of building images for the ALIX,
 WRAP and Vagrant systems, the following are available for download:
 
-* [Vagrant Box](https://kalopa.com/download/robobsd/robobsd.box.gz)
-* [ALIX](https://kalopa.com/download/robobsd/robobsd.alix.img.gz)
-* [WRAP](https://kalopa.com/download/robobsd/robobsd.wrap.img.gz)
+* [Vagrant Box](https://kalopa.com/download/robobsd/robobsd-12.3-kr1.box.gz)
+* [ALIX](https://kalopa.com/download/robobsd/robobsd-12.3-kr1.alix.img.gz)
+* [WRAP](https://kalopa.com/download/robobsd/robobsd-12.3-kr1.wrap.img.gz)
 
 ## Running RoboBSD on Vagrant
 
@@ -104,6 +104,11 @@ with the FreeBSD source tools) to build three, fresh install images.
 Once the Vagrant VM has produced the three images,
 you can copy them to your home directory using the following commands:
 
+-rw-r--r-- 1 dtynan staff 715448490 Sep  1  2020 robobsd-12.3-kr1.alix.img.gz
+-rw-r--r-- 1 dtynan staff 692063920 Sep  1  2020 robobsd-12.3-kr1.box.img.gz
+-rw-r--r-- 1 dtynan staff 715518028 Sep  1  2020 robobsd-12.3-kr1.vagrant.img.gz
+-rw-r--r-- 1 dtynan staff 364106978 Sep  1  2020 robobsd-12.3-kr1.wrap.img.gz
+
     $ vagrant scp :images/robobsd.vagrant.img.gz .
     $ vagrant scp :images/robobsd.alix.img.gz .
     $ vagrant scp :images/robobsd.wrap.img.gz .
@@ -120,12 +125,12 @@ You can also use *build_vbox.sh* to copy the vagrant disk image from the VM file
 and create a Vagrant box which will work on Virtualbox.
 
 Failing that, you can download a copy
-[here](https://kalopa.com/download/robobsd/robobsd.box.gz).
+[here](https://kalopa.com/download/robobsd/robobsd-12.3-kr1.box.img.gz).
 To install this, use the following:
 
-    $ curl -O https://kalopa.com/download/robobsd/robobsd.box.gz
-    $ gunzip robobsd.box
-    $ vagrant box add --name robobsd ./robobsd.box
+    $ curl -O https://kalopa.com/download/robobsd/robobsd-12.3-kr1.box.img.gz
+    $ gunzip robobsd-12.3-kr1.box.img
+    $ vagrant box add --name robobsd ./robobsd-12.3-kr1.box.img
 
 If you have installed an older version of this Vagrant box,
 you will need to use the _--force_ option to replace it.
@@ -134,8 +139,8 @@ the default password.
 
 If you are looking for raw Compact Flash images for PC Engines boards, try here:
 
-    $ curl -O https://kalopa.com/download/robobsd/robobsd.alix.img.gz
-    $ curl -O https://kalopa.com/download/robobsd/robobsd.wrap.img.gz
+    $ curl -O https://kalopa.com/download/robobsd/robobsd-12.3-kr1.alix.img.gz
+    $ curl -O https://kalopa.com/download/robobsd/robobsd-12.3-kr1.wrap.img.gz
 
 As created, there is a user account _robobsd_ with password _vagrant_ on the image.
 
