@@ -157,34 +157,36 @@ To exit out of QEMU emulation, type **^Ax**.
 
 The following packages have been pre-installed:
 
-* autoconf: 2.69\_3
-* autoconf-wrapper: 20131203
-* automake: 1.16.1\_2
-* binutils: 2.33.1\_2,1
-* dejagnu: 1.6.2
-* expect: 5.45.4\_2,1
-* gettext-runtime: 0.20.1
-* gettext-tools: 0.20.1\_1
-* gmake: 4.2.1\_3
+* autoconf: 2.71
+* autoconf-switch: 20220527
+* automake: 1.16.5
+* binutils: 2.39,1
+* dejagnu: 1.6.3
+* expect: 5.45.4\_4,1
+* gettext-runtime: 0.21.1
+* gettext-tools: 0.21.1
+* gmake: 4.3\_2
 * indexinfo: 0.3.1
-* libedit: 3.1.20191211,1
-* libffi: 3.2.1\_3
-* libiconv: 1.14\_11
-* libtextstyle: 0.20.1
-* libunwind: 20170615
-* libyaml: 0.2.2
-* m4: 1.4.18\_1,1
-* perl5: 5.30.3
-* pkg: 1.13.2\_1
+* libedit: 3.1.20221030,1
+* libffi: 3.4.4
+* libiconv: 1.17
+* libtextstyle: 0.21.1
+* libunwind: 20211201\_1
+* libyaml: 0.2.5
+* m4: 1.4.19,1
+* mpdigital: 2.5.1
+* mpdigital: 2.5.1
+* perl5: 5.32.1\_3
+* pkg: 1.19.0
 * python3: 3\_3
-* python37: 3.7.7\_1
-* readline: 8.0.4
-* rsync: 3.1.3\_1
-* ruby: 2.6.5,1
-* ruby26-gems: 3.0.6
-* rubygem-rake: 12.3.3
-* sudo: 1.8.31p1
-* tcl86: 8.6.10
+* python39: 3.9.16
+* readline: 8.2.0
+* rsync: 3.2.7
+* ruby: 3.0.5,1
+* ruby30-gems: 3.3.26
+* rubygem-rake: 13.0.6
+* sudo: 1.9.12p2
+* tcl86: 8.6.13
 
 ## Issues / Contributions
 

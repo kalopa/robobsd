@@ -114,7 +114,6 @@ device		scbus			# SCSI bus (required for ATA/SCSI)
 device		ch			# SCSI media changers
 device		da			# Direct Access (disks)
 device		sa			# Sequential Access (tape etc)
-device		cd			# CD
 device		pass			# Passthrough device (direct ATA/SCSI access)
 device		ses			# Enclosure Services (SES and SAF-TE)
 #device		ctl			# CAM Target Layer
@@ -183,12 +182,6 @@ device		cardbus			# CardBus (32-bit) bus
 
 # Serial (COM) ports
 device		uart			# Generic UART driver
-
-device		sio
-device		sio0	at isa? port "IO_COM1" tty irq 4 vector siointr
-device		sio1	at isa? port "IO_COM2" tty irq 3 vector siointr
-device		sio2	at isa? port "IO_COM3" tty irq 5 vector siointr
-device		sio3	at isa? port "IO_COM4" tty irq 9 vector siointr
 
 # Parallel port
 device		ppc
@@ -296,9 +289,7 @@ device		padlock_rng		# VIA Padlock RNG
 device		rdrand_rng		# Intel Bull Mountain RNG
 device		ether			# Ethernet support
 device		vlan			# 802.1Q VLAN support
-device		tun			# Packet tunnel.
 device		md			# Memory "disks"
-device		gif			# IPv6 and IPv4 tunneling
 device		firmware		# firmware assist module
 
 # The `bpf' device enables the Berkeley Packet Filter.

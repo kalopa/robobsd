@@ -4,6 +4,10 @@
 # This is a Vagrant configuration to spin up a standard FreeBSD system,
 # and build a RoboBSD disk image.
 #
+# You will need the following Vagrant plugins:
+#	vagrant-disksize
+#	vagrant-scp
+#
 # NB: I have run into virtualbox extension issues with the latest
 # FreeBSD vagrant boxen. I know it works (more or less) with
 # VirtualBox version 5.1.22, but beyond that, you're on your own.
@@ -17,9 +21,9 @@
 #
 Vagrant.configure(2) do |config|
   config.vm.hostname = "robodev"
-  config.vm.box = "freebsd/FreeBSD-12.3-RELEASE"
+  config.vm.box = "freebsd/FreeBSD-12.4-RELEASE"
   #config.vm.box_version = "2019.11.01"
-  config.vm.disk :disk, size: '80GB'
+  config.disksize.size = '100GB'
   config.vm.base_mac = "080027D14C66"
   config.vm.guest = :freebsd
   config.vm.network "forwarded_port", guest: 22, host: 8022
@@ -27,7 +31,7 @@ Vagrant.configure(2) do |config|
   config.ssh.shell = "sh"
 
   config.vm.provider :virtualbox do |vb|
-    vb.customize ["modifyvm", :id, "--memory", "2048"]
+    vb.customize ["modifyvm", :id, "--memory", "4096"]
     vb.customize ["modifyvm", :id, "--cpus", "4"]
     vb.customize ["modifyvm", :id, "--audio", "none"]
   end

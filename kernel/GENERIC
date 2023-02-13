@@ -1,12 +1,27 @@
 #
-# PC Engines WRAP 1E board
-# kernel configuration file for FreeBSD/i386
+# GENERIC -- Generic kernel configuration file for FreeBSD/i386
 #
-machine		i386
-cpu		I586_CPU
-ident		WRAP
+# For more information on this file, please read the config(5) manual page,
+# and/or the handbook section on Kernel Configuration Files:
+#
+#    https://www.FreeBSD.org/doc/en_US.ISO8859-1/books/handbook/kernelconfig-config.html
+#
+# The handbook is also available locally in /usr/share/doc/handbook
+# if you've installed the doc distribution, otherwise always see the
+# FreeBSD World Wide Web server (https://www.FreeBSD.org/) for the
+# latest information.
+#
+# An exhaustive list of options and more detailed explanations of the
+# device lines is also present in the ../../conf/NOTES and NOTES files.
+# If you are in doubt as to the purpose or necessity of a line, check first
+# in NOTES.
+#
+# $FreeBSD: releng/12.1/sys/i386/conf/GENERIC 344149 2019-02-15 09:49:09Z kib $
 
-options		CPU_GEODE
+cpu		I486_CPU
+cpu		I586_CPU
+cpu		I686_CPU
+ident		GENERIC
 
 makeoptions	DEBUG=-g		# Build kernel with gdb(1) debug symbols
 makeoptions	WITH_CTF=1		# Run ctfconvert(1) for DTrace support
@@ -15,8 +30,12 @@ options 	SCHED_ULE		# ULE scheduler
 options 	PREEMPTION		# Enable kernel thread preemption
 options 	VIMAGE			# Subsystem virtualization, e.g. VNET
 options 	INET			# InterNETworking
+options 	INET6			# IPv6 communications protocols
+options 	IPSEC			# IP (v4/v6) security
+options 	IPSEC_SUPPORT		# Allow kldload of ipsec and tcpmd5
 options 	TCP_HHOOK		# hhook(9) framework for TCP
 options 	TCP_OFFLOAD		# TCP offload
+options 	SCTP			# Stream Control Transmission Protocol
 options 	FFS			# Berkeley Fast Filesystem
 options 	SOFTUPDATES		# Enable FFS soft updates support
 options 	UFS_ACL			# Support for access control lists
@@ -114,6 +133,7 @@ device		scbus			# SCSI bus (required for ATA/SCSI)
 device		ch			# SCSI media changers
 device		da			# Direct Access (disks)
 device		sa			# Sequential Access (tape etc)
+device		cd			# CD
 device		pass			# Passthrough device (direct ATA/SCSI access)
 device		ses			# Enclosure Services (SES and SAF-TE)
 #device		ctl			# CAM Target Layer
