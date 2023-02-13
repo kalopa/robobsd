@@ -104,11 +104,6 @@ with the FreeBSD source tools) to build three, fresh install images.
 Once the Vagrant VM has produced the three images,
 you can copy them to your home directory using the following commands:
 
--rw-r--r-- 1 dtynan staff 715448490 Sep  1  2020 robobsd-12.3-kr1.alix.img.gz
--rw-r--r-- 1 dtynan staff 692063920 Sep  1  2020 robobsd-12.3-kr1.box.img.gz
--rw-r--r-- 1 dtynan staff 715518028 Sep  1  2020 robobsd-12.3-kr1.vagrant.img.gz
--rw-r--r-- 1 dtynan staff 364106978 Sep  1  2020 robobsd-12.3-kr1.wrap.img.gz
-
     $ vagrant scp :images/robobsd.vagrant.img.gz .
     $ vagrant scp :images/robobsd.alix.img.gz .
     $ vagrant scp :images/robobsd.wrap.img.gz .
