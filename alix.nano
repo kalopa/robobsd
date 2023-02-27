@@ -25,8 +25,11 @@ NANO_HEADS=16
 NANO_SECTS=63
 
 NANO_IMAGES=1
+NANO_SLICE_ROOT=s1
+NANO_SLICE_CFG=s2
+NANO_SLICE_DATA=s3
 
-NANO_CODESIZE=4194304
+NANO_CODESIZE=6291456
 NANO_CONFSIZE=2048
 NANO_RAM_TMPVARSIZE=40960
 NANO_DATASIZE=-1
@@ -85,7 +88,8 @@ cust_create_dirs() (
 	cd ${NANO_WORLDDIR}
 	mkdir app
 	ln -s app home
-	echo "/dev/${NANO_DRIVE}s4 /app ufs rw 2 2" >> etc/fstab
+	echo "/dev/${NANO_DRIVE}${NANO_SLICE_DATA} /app ufs rw 2 2" >> etc/fstab
+	rm -rf usr/lib/debug
 )
 
 last_orders () (

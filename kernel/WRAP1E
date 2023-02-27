@@ -4,6 +4,7 @@
 #
 machine		i386
 cpu		I586_CPU
+cpu		I686_CPU
 ident		WRAP
 
 options		CPU_GEODE

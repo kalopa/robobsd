@@ -4,3 +4,4 @@ images/*.img
 log
 *.sublime-project
 *.sublime-workspace
+release.rb
