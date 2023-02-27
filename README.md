@@ -12,9 +12,9 @@ from the FreeBSD Manual.
 If you don't want to go through the hassle of building images for the ALIX,
 WRAP and Vagrant systems, the following are available for download:
 
-* [Vagrant Box](https://kalopa.com/download/robobsd/robobsd-12.3-kr1.box.gz)
-* [ALIX](https://kalopa.com/download/robobsd/robobsd-12.3-kr1.alix.img.gz)
-* [WRAP](https://kalopa.com/download/robobsd/robobsd-12.3-kr1.wrap.img.gz)
+* [Vagrant Box](https://kalopa.com/download/robobsd/robobsd-12.4-kr2.box.gz)
+* [ALIX](https://kalopa.com/download/robobsd/robobsd-12.4-kr2.alix.img.gz)
+* [WRAP](https://kalopa.com/download/robobsd/robobsd-12.4-kr2.wrap.img.gz)
 
 ## Running RoboBSD on Vagrant
 
@@ -120,12 +120,12 @@ You can also use *build_vbox.sh* to copy the vagrant disk image from the VM file
 and create a Vagrant box which will work on Virtualbox.
 
 Failing that, you can download a copy
-[here](https://kalopa.com/download/robobsd/robobsd-12.3-kr1.box.img.gz).
+[here](https://kalopa.com/download/robobsd/robobsd-12.4-kr2.box.img.gz).
 To install this, use the following:
 
-    $ curl -O https://kalopa.com/download/robobsd/robobsd-12.3-kr1.box.img.gz
-    $ gunzip robobsd-12.3-kr1.box.img
-    $ vagrant box add --name robobsd ./robobsd-12.3-kr1.box.img
+    $ curl -O https://kalopa.com/download/robobsd/robobsd-12.4-kr2.box.img.gz
+    $ gunzip robobsd-12.4-kr2.box.img
+    $ vagrant box add --name robobsd ./robobsd-12.4-kr2.box.img
 
 If you have installed an older version of this Vagrant box,
 you will need to use the _--force_ option to replace it.
@@ -134,8 +134,8 @@ the default password.
 
 If you are looking for raw Compact Flash images for PC Engines boards, try here:
 
-    $ curl -O https://kalopa.com/download/robobsd/robobsd-12.3-kr1.alix.img.gz
-    $ curl -O https://kalopa.com/download/robobsd/robobsd-12.3-kr1.wrap.img.gz
+    $ curl -O https://kalopa.com/download/robobsd/robobsd-12.4-kr2.alix.img.gz
+    $ curl -O https://kalopa.com/download/robobsd/robobsd-12.4-kr2.wrap.img.gz
 
 As created, there is a user account _robobsd_ with password _vagrant_ on the image.
 
@@ -158,30 +158,37 @@ The following packages have been pre-installed:
 * binutils: 2.39,1
 * dejagnu: 1.6.3
 * expect: 5.45.4\_4,1
+* gcc12: 12.2.0\_5
 * gettext-runtime: 0.21.1
 * gettext-tools: 0.21.1
 * gmake: 4.3\_2
+* gmp: 6.2.1
 * indexinfo: 0.3.1
 * libedit: 3.1.20221030,1
 * libffi: 3.4.4
 * libiconv: 1.17
+* liblz4: 1.9.4,1
 * libtextstyle: 0.21.1
 * libunwind: 20211201\_1
 * libyaml: 0.2.5
 * m4: 1.4.19,1
-* mpdigital: 2.5.1
-* mpdigital: 2.5.1
+* mpc: 1.2.1
+* mpdecimal: 2.5.1
+* mpfr: 4.1.1
 * perl5: 5.32.1\_3
 * pkg: 1.19.0
 * python3: 3\_3
 * python39: 3.9.16
 * readline: 8.2.0
+* redis: 7.0.8
 * rsync: 3.2.7
 * ruby: 3.0.5,1
 * ruby30-gems: 3.3.26
 * rubygem-rake: 13.0.6
-* sudo: 1.9.12p2
+* sudo: 1.9.13p1
 * tcl86: 8.6.13
+* xxhash: 0.8.1\_2
+* zstd: 1.5.2\_1
 
 ## Issues / Contributions
 
